@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lieferschein - Schulgeräte</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -19,6 +18,36 @@
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+                max-width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .signature-container {
+                border: 1px solid #000;
+                background: white;
+            }
+            canvas {
+                border: none;
+            }
+            input, textarea, select {
+                border: none;
+                border-bottom: 1px solid #333;
+                padding: 5px 0;
+            }
+            .info-box {
+                display: none;
+            }
         }
         h1 {
             color: #333;
@@ -109,6 +138,14 @@
             margin-top: 0;
             color: #007AFF;
         }
+        .print-button {
+            background: #34C759;
+            font-size: 16px;
+            padding: 15px 30px;
+        }
+        .print-button:hover {
+            background: #28a745;
+        }
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -132,12 +169,12 @@
         <h1>📦 Lieferschein - Schulgeräte</h1>
 
 ```
-    <div class="info-box">
+    <div class="info-box no-print">
         <h3>Anleitung</h3>
         <p><strong>1.</strong> Alle Felder ausfüllen<br>
         <strong>2.</strong> Mit Apple Pencil im Unterschriftsfeld unterschreiben<br>
-        <strong>3.</strong> "PDF Erstellen" klicken<br>
-        <strong>4.</strong> PDF wird heruntergeladen - Sie können dann wählen, wo Sie es speichern möchten</p>
+        <strong>3.</strong> "🖨️ Drucken / Als PDF speichern" klicken<br>
+        <strong>4.</strong> Im Druckdialog "Als PDF exportieren" wählen und Speicherort auswählen</p>
     </div>
 
     <form id="deliveryForm">
@@ -175,6 +212,61 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="schoolName">Schulname *</label>
+            <select id="schoolName" required>
+                <option value="">Bitte Schule auswählen</option>
+                <option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
+                <option value="Albert-Schweitzer-Schule">Albert-Schweitzer-Schule</option>
+                <option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
+                <option value="Burgunderschule">Burgunderschule</option>
+                <option value="Comenius-Schule">Comenius-Schule</option>
+                <option value="Die Brücke">Die Brücke</option>
+                <option value="Die Brücke Dep">Die Brücke Dep</option>
+                <option value="Dreikönigenschule">Dreikönigenschule</option>
+                <option value="Friedrich-von-Bodelschwingh-Schule">Friedrich-von-Bodelschwingh-Schule</option>
+                <option value="Ganztagsrealschule Norf">Ganztagsrealschule Norf</option>
+                <option value="Gebrüder-Grimm-Schule">Gebrüder-Grimm-Schule</option>
+                <option value="Gesamtschule an der Erft">Gesamtschule an der Erft</option>
+                <option value="Gesamtschule an der Erft Dep">Gesamtschule an der Erft Dep</option>
+                <option value="Gesamtschule Nordstadt">Gesamtschule Nordstadt</option>
+                <option value="Gesamtschule Nordstadt Dep">Gesamtschule Nordstadt Dep</option>
+                <option value="Gesamtschule Norf">Gesamtschule Norf</option>
+                <option value="Geschwister-Scholl-Grundschule">Geschwister-Scholl-Grundschule</option>
+                <option value="Görresschule">Görresschule</option>
+                <option value="Grundschule Allerheiligen">Grundschule Allerheiligen</option>
+                <option value="Gymnasium Norf">Gymnasium Norf</option>
+                <option value="Herbert-Karrenberg-Schule">Herbert-Karrenberg-Schule</option>
+                <option value="Janusz-Korczak-Gesamtschule">Janusz-Korczak-Gesamtschule</option>
+                <option value="Janusz-Korczak-Gesamtschule Dep">Janusz-Korczak-Gesamtschule Dep</option>
+                <option value="Karl-Kreiner-Schule">Karl-Kreiner-Schule</option>
+                <option value="Kreuzschule">Kreuzschule</option>
+                <option value="Kyburg">Kyburg</option>
+                <option value="Leoschule">Leoschule</option>
+                <option value="Marie-Curie-Gymnasium">Marie-Curie-Gymnasium</option>
+                <option value="Marie-Curie-Gymnasium Dep">Marie-Curie-Gymnasium Dep</option>
+                <option value="Martin-Luther-Schule">Martin-Luther-Schule</option>
+                <option value="Martinus-Schule Holzheim">Martinus-Schule Holzheim</option>
+                <option value="Maximilian-Kolbe-Schule">Maximilian-Kolbe-Schule</option>
+                <option value="Münsterschule">Münsterschule</option>
+                <option value="Nelly-Sachs-Gymnasium">Nelly-Sachs-Gymnasium</option>
+                <option value="Pestalozzischule">Pestalozzischule</option>
+                <option value="Quirinus-Gymnasium">Quirinus-Gymnasium</option>
+                <option value="Realschule Holzheim">Realschule Holzheim</option>
+                <option value="Rita-Süssmuth-Realschule">Rita-Süssmuth-Realschule</option>
+                <option value="Realschule Südstadt">Realschule Südstadt</option>
+                <option value="Richard-Schirrman-Schule">Richard-Schirrman-Schule</option>
+                <option value="Sekundarschule Neuss">Sekundarschule Neuss</option>
+                <option value="St.-Andreas-Schule">St.-Andreas-Schule</option>
+                <option value="St.-Hubertus-Schule">St.-Hubertus-Schule</option>
+                <option value="St.-Konrad-Schule">St.-Konrad-Schule</option>
+                <option value="St.-Martinus-Schule">St.-Martinus-Schule</option>
+                <option value="St.-Stephanus-Schule">St.-Stephanus-Schule</option>
+                <option value="St.Peter-Schule">St.Peter-Schule</option>
+                <option value="Theodor-Schwann-Kolleg">Theodor-Schwann-Kolleg</option>
+            </select>
+        </div>
+
         <div class="grid">
             <div class="form-group">
                 <label for="teacherName">Name des Lehrers *</label>
@@ -196,14 +288,14 @@
             <label>Unterschrift Lehrer *</label>
             <div class="signature-container">
                 <canvas id="signatureCanvas" width="700" height="200"></canvas>
-                <div class="button-group">
+                <div class="button-group no-print">
                     <button type="button" class="btn-danger" onclick="clearSignature()">Unterschrift löschen</button>
                 </div>
             </div>
         </div>
 
-        <div class="button-group">
-            <button type="button" class="btn-primary" onclick="generatePDF()">📄 PDF Erstellen & Herunterladen</button>
+        <div class="button-group no-print">
+            <button type="button" class="btn-primary print-button" onclick="printDocument()">🖨️ Drucken / Als PDF speichern</button>
             <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
         </div>
     </form>
@@ -311,13 +403,7 @@
         return canvas.toDataURL() === blank.toDataURL();
     }
 
-    async function generatePDF() {
-        // Check if jsPDF is loaded
-        if (typeof window.jspdf === 'undefined') {
-            alert('❌ PDF-Bibliothek wird geladen... Bitte warten Sie einen Moment und versuchen Sie es erneut.');
-            return;
-        }
-
+    function printDocument() {
         // Validate form
         const form = document.getElementById('deliveryForm');
         if (!form.checkValidity()) {
@@ -331,108 +417,8 @@
             return;
         }
 
-        try {
-            // Get form values
-            const serialNumber = document.getElementById('serialNumber').value;
-            const deviceName = document.getElementById('deviceName').value;
-            const deviceType = document.getElementById('deviceType').value;
-            const deliveryDate = document.getElementById('deliveryDate').value;
-            const teacherName = document.getElementById('teacherName').value;
-            const schoolClass = document.getElementById('schoolClass').value;
-            const notes = document.getElementById('notes').value;
-
-            // Create PDF
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF();
-
-            // Header
-            pdf.setFontSize(20);
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Lieferschein - Schulgeräte', 20, 20);
-
-            // Line
-            pdf.setDrawColor(0, 122, 255);
-            pdf.setLineWidth(1);
-            pdf.line(20, 25, 190, 25);
-
-            // Content
-            pdf.setFontSize(12);
-            pdf.setFont(undefined, 'bold');
-            let y = 40;
-
-            pdf.text('Seriennummer:', 20, y);
-            pdf.setFont(undefined, 'normal');
-            pdf.text(serialNumber, 70, y);
-
-            y += 10;
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Gerätename:', 20, y);
-            pdf.setFont(undefined, 'normal');
-            pdf.text(deviceName, 70, y);
-
-            y += 10;
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Gerätetyp:', 20, y);
-            pdf.setFont(undefined, 'normal');
-            pdf.text(deviceType, 70, y);
-
-            y += 10;
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Ausgabedatum:', 20, y);
-            pdf.setFont(undefined, 'normal');
-            const formattedDate = new Date(deliveryDate).toLocaleDateString('de-DE');
-            pdf.text(formattedDate, 70, y);
-
-            y += 10;
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Lehrer:', 20, y);
-            pdf.setFont(undefined, 'normal');
-            pdf.text(teacherName, 70, y);
-
-            if (schoolClass) {
-                y += 10;
-                pdf.setFont(undefined, 'bold');
-                pdf.text('Klasse/Abteilung:', 20, y);
-                pdf.setFont(undefined, 'normal');
-                pdf.text(schoolClass, 70, y);
-            }
-
-            if (notes) {
-                y += 15;
-                pdf.setFont(undefined, 'bold');
-                pdf.text('Bemerkungen:', 20, y);
-                y += 7;
-                pdf.setFont(undefined, 'normal');
-                const splitNotes = pdf.splitTextToSize(notes, 170);
-                pdf.text(splitNotes, 20, y);
-                y += (splitNotes.length * 7);
-            }
-
-            // Signature
-            y += 20;
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Unterschrift Lehrer:', 20, y);
-            
-            const signatureData = canvas.toDataURL('image/png');
-            pdf.addImage(signatureData, 'PNG', 20, y + 5, 100, 30);
-
-            // Footer
-            pdf.setFontSize(8);
-            pdf.setFont(undefined, 'normal');
-            pdf.setTextColor(128);
-            pdf.text(`Erstellt am: ${new Date().toLocaleString('de-DE')}`, 20, 285);
-
-            // Generate filename with serial number
-            const filename = `Lieferschein_${serialNumber}_${formattedDate.replace(/\./g, '-')}.pdf`;
-            
-            // Save PDF
-            pdf.save(filename);
-
-            alert(`✅ PDF wurde erstellt und wird heruntergeladen!\n\nDateiname: ${filename}\n\nSie können nun wählen, wo Sie die Datei speichern möchten (z.B. in iCloud Drive, Dateien App, oder einem anderen Ordner).`);
-        } catch (error) {
-            alert('❌ Fehler beim Erstellen des PDFs: ' + error.message);
-            console.error('PDF Error:', error);
-        }
+        // Trigger print dialog
+        window.print();
     }
 </script>
 ```
