@@ -1,119 +1,143 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lieferschein - Schulgeräte (iPad Version)</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.plugin.qrcode.min.js"></script>
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background: #f5f5f5;
-    }
-    .container {
-        background: white;
-        padding: 40px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-        color: #333;
-        border-bottom: 3px solid #007AFF;
-        padding-bottom: 10px;
-        margin-bottom: 30px;
-    }
-    .info-box {
-        background: #e7f3ff;
-        border-left: 4px solid #007AFF;
-        padding: 15px;
-        margin: 20px 0;
-        border-radius: 4px;
-    }
-    .info-box h3 { margin-top: 0; color: #007AFF; }
-    .form-group { margin-bottom: 20px; }
-    label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 5px;
-        color: #555;
-    }
-    input, textarea, select {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-    input:focus, textarea:focus, select:focus {
-        outline: none;
-        border-color: #007AFF;
-    }
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-    @media (max-width: 600px) {
-        .grid { grid-template-columns: 1fr; }
-        body { padding: 10px; }
-        .container { padding: 20px; }
-    }
-    .signature-container {
-        border: 2px dashed #007AFF;
-        border-radius: 5px;
-        background: #f9f9f9;
-        padding: 10px;
-        margin-top: 10px;
-    }
-    canvas {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background: white;
-        cursor: crosshair;
-        width: 100%;
-        touch-action: none;
-    }
-    .button-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-    }
-    button {
-        padding: 12px 24px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .btn-primary { background: #007AFF; color: white; }
-    .btn-primary:hover { background: #0056b3; }
-    .btn-secondary { background: #6c757d; color: white; }
-    .btn-secondary:hover { background: #545b62; }
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-danger:hover { background: #c82333; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lieferschein - Schulgeräte</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007AFF;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        .signature-container {
+            border: 2px dashed #007AFF;
+            border-radius: 5px;
+            background: #f9f9f9;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            touch-action: none;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007AFF;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #007AFF;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
-    <h1>📦 Lieferschein – Schulgeräte</h1>
+    <div class="container">
+        <h1>📦 Lieferschein - Schulgeräte</h1>
 
+```
     <div class="info-box">
-        <h3>ℹ️ Anleitung</h3>
-        <p>
-            <strong>1.</strong> Alle Felder ausfüllen<br>
-            <strong>2.</strong> Mit Apple Pencil im Feld unterschreiben<br>
-            <strong>3.</strong> <b>„📄 PDF Erstellen“</b> klicken<br>
-            <strong>4.</strong> Das PDF öffnet sich in einem neuen Tab → über das <b>Teilen-Symbol</b> speichern
-        </p>
+        <h3>Anleitung</h3>
+        <p><strong>1.</strong> Alle Felder ausfüllen<br>
+        <strong>2.</strong> Mit Apple Pencil im Unterschriftsfeld unterschreiben<br>
+        <strong>3.</strong> "PDF Erstellen" klicken<br>
+        <strong>4.</strong> PDF wird heruntergeladen - Sie können dann wählen, wo Sie es speichern möchten</p>
     </div>
 
     <form id="deliveryForm">
@@ -122,6 +146,7 @@
                 <label for="serialNumber">Seriennummer *</label>
                 <input type="text" id="serialNumber" required placeholder="z.B. C02XY1234567">
             </div>
+            
             <div class="form-group">
                 <label for="deviceName">Gerätename *</label>
                 <input type="text" id="deviceName" required placeholder="z.B. iPad Pro 11">
@@ -133,11 +158,17 @@
                 <label for="deviceType">Gerätetyp *</label>
                 <select id="deviceType" required>
                     <option value="">Bitte auswählen</option>
-                    <option>iPad</option><option>iPad Pro</option><option>iPad Air</option>
-                    <option>MacBook</option><option>MacBook Air</option><option>MacBook Pro</option>
-                    <option>Apple Pencil</option><option>Zubehör</option>
+                    <option value="iPad">iPad</option>
+                    <option value="iPad Pro">iPad Pro</option>
+                    <option value="iPad Air">iPad Air</option>
+                    <option value="MacBook">MacBook</option>
+                    <option value="MacBook Air">MacBook Air</option>
+                    <option value="MacBook Pro">MacBook Pro</option>
+                    <option value="Apple Pencil">Apple Pencil</option>
+                    <option value="Zubehör">Zubehör</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label for="deliveryDate">Ausgabedatum *</label>
                 <input type="date" id="deliveryDate" required>
@@ -149,6 +180,7 @@
                 <label for="teacherName">Name des Lehrers *</label>
                 <input type="text" id="teacherName" required placeholder="Vor- und Nachname">
             </div>
+
             <div class="form-group">
                 <label for="schoolClass">Klasse/Abteilung</label>
                 <input type="text" id="schoolClass" placeholder="z.B. 5a, Verwaltung">
@@ -157,7 +189,7 @@
 
         <div class="form-group">
             <label for="notes">Bemerkungen</label>
-            <textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden etc."></textarea>
+            <textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden, etc."></textarea>
         </div>
 
         <div class="form-group">
@@ -171,37 +203,239 @@
         </div>
 
         <div class="button-group">
-            <button type="button" class="btn-primary" onclick="generatePDF()">📄 PDF Erstellen</button>
+            <button type="button" class="btn-primary" onclick="generatePDF()">📄 PDF Erstellen & Herunterladen</button>
             <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
         </div>
     </form>
 </div>
 
 <script>
-document.getElementById('deliveryDate').valueAsDate = new Date();
+    // Datum auf heute setzen
+    document.getElementById('deliveryDate').valueAsDate = new Date();
 
-const canvas = document.getElementById('signatureCanvas');
-const ctx = canvas.getContext('2d');
-let isDrawing = false, lastX = 0, lastY = 0;
+    // Signature Canvas Setup
+    const canvas = document.getElementById('signatureCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
 
-// Zeichnen – Maus
-canvas.addEventListener('mousedown', e => {isDrawing = true; setPosition(e);});
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', () => isDrawing = false);
-canvas.addEventListener('mouseout', () => isDrawing = false);
+    // Touch and Mouse Events
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
 
-// Zeichnen – Touch
-canvas.addEventListener('touchstart', e => {e.preventDefault(); isDrawing = true; setPosition(e.touches[0]);});
-canvas.addEventListener('touchmove', e => {e.preventDefault(); draw(e.touches[0]);});
-canvas.addEventListener('touchend', () => isDrawing = false);
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchend', stopDrawing);
 
-function setPosition(e) {
-    const rect = canvas.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
-}
+    function startDrawing(e) {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+    }
 
-function draw(e) {
-    if (!isDrawing) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        lastX = x;
+        lastY = y;
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+    }
+
+    function handleTouchStart(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        lastX = touch.clientX - rect.left;
+        lastY = touch.clientY - rect.top;
+        isDrawing = true;
+    }
+
+    function handleTouchMove(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        lastX = x;
+        lastY = y;
+    }
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function resetForm() {
+        document.getElementById('deliveryForm').reset();
+        clearSignature();
+        document.getElementById('deliveryDate').valueAsDate = new Date();
+    }
+
+    function isCanvasBlank() {
+        const blank = document.createElement('canvas');
+        blank.width = canvas.width;
+        blank.height = canvas.height;
+        return canvas.toDataURL() === blank.toDataURL();
+    }
+
+    async function generatePDF() {
+        // Check if jsPDF is loaded
+        if (typeof window.jspdf === 'undefined') {
+            alert('❌ PDF-Bibliothek wird geladen... Bitte warten Sie einen Moment und versuchen Sie es erneut.');
+            return;
+        }
+
+        // Validate form
+        const form = document.getElementById('deliveryForm');
+        if (!form.checkValidity()) {
+            alert('Bitte füllen Sie alle Pflichtfelder (*) aus!');
+            form.reportValidity();
+            return;
+        }
+
+        if (isCanvasBlank()) {
+            alert('Bitte unterschreiben Sie das Formular!');
+            return;
+        }
+
+        try {
+            // Get form values
+            const serialNumber = document.getElementById('serialNumber').value;
+            const deviceName = document.getElementById('deviceName').value;
+            const deviceType = document.getElementById('deviceType').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+            const teacherName = document.getElementById('teacherName').value;
+            const schoolClass = document.getElementById('schoolClass').value;
+            const notes = document.getElementById('notes').value;
+
+            // Create PDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            // Header
+            pdf.setFontSize(20);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Lieferschein - Schulgeräte', 20, 20);
+
+            // Line
+            pdf.setDrawColor(0, 122, 255);
+            pdf.setLineWidth(1);
+            pdf.line(20, 25, 190, 25);
+
+            // Content
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'bold');
+            let y = 40;
+
+            pdf.text('Seriennummer:', 20, y);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(serialNumber, 70, y);
+
+            y += 10;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Gerätename:', 20, y);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(deviceName, 70, y);
+
+            y += 10;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Gerätetyp:', 20, y);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(deviceType, 70, y);
+
+            y += 10;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Ausgabedatum:', 20, y);
+            pdf.setFont(undefined, 'normal');
+            const formattedDate = new Date(deliveryDate).toLocaleDateString('de-DE');
+            pdf.text(formattedDate, 70, y);
+
+            y += 10;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Lehrer:', 20, y);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(teacherName, 70, y);
+
+            if (schoolClass) {
+                y += 10;
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Klasse/Abteilung:', 20, y);
+                pdf.setFont(undefined, 'normal');
+                pdf.text(schoolClass, 70, y);
+            }
+
+            if (notes) {
+                y += 15;
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Bemerkungen:', 20, y);
+                y += 7;
+                pdf.setFont(undefined, 'normal');
+                const splitNotes = pdf.splitTextToSize(notes, 170);
+                pdf.text(splitNotes, 20, y);
+                y += (splitNotes.length * 7);
+            }
+
+            // Signature
+            y += 20;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Unterschrift Lehrer:', 20, y);
+            
+            const signatureData = canvas.toDataURL('image/png');
+            pdf.addImage(signatureData, 'PNG', 20, y + 5, 100, 30);
+
+            // Footer
+            pdf.setFontSize(8);
+            pdf.setFont(undefined, 'normal');
+            pdf.setTextColor(128);
+            pdf.text(`Erstellt am: ${new Date().toLocaleString('de-DE')}`, 20, 285);
+
+            // Generate filename with serial number
+            const filename = `Lieferschein_${serialNumber}_${formattedDate.replace(/\./g, '-')}.pdf`;
+            
+            // Save PDF
+            pdf.save(filename);
+
+            alert(`✅ PDF wurde erstellt und wird heruntergeladen!\n\nDateiname: ${filename}\n\nSie können nun wählen, wo Sie die Datei speichern möchten (z.B. in iCloud Drive, Dateien App, oder einem anderen Ordner).`);
+        } catch (error) {
+            alert('❌ Fehler beim Erstellen des PDFs: ' + error.message);
+            console.error('PDF Error:', error);
+        }
+    }
+</script>
+```
+
+</body>
+</html>
