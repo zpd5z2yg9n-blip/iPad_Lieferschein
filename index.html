@@ -26,17 +26,22 @@
   tr:hover{background:#f1f7ff;cursor:pointer}
   .note { color:#666;font-size:13px;margin-top:4px; }
   .logo-placeholder { text-align:center; margin-bottom:10px; }
+
+  /* Spotlight-Text – unsichtbar für Nutzer, aber lesbar für Spotlight */
+  #spotlightText {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0.01;
+    color: transparent;
+    white-space: pre-wrap;
+  }
 </style>
 </head>
 <body>
 <div class="container" id="pdfRoot">
-
-  <!-- LOGO HIER (falls später gewünscht): 
-       z.B. <div class="logo-placeholder"><img src="PATH_ZUM_LOGO" alt="Logo" style="max-height:80px"></div>
-  -->
-
+  <!-- LOGO HIER (optional) -->
   <form id="deliveryForm" onsubmit="return false;">
-    <!-- Stadt / Schulform -->
     <div class="grid">
       <div class="form-group">
         <label for="city">Stadt *</label>
@@ -49,7 +54,6 @@
           <option value="Meerbusch">Meerbusch</option>
         </select>
       </div>
-
       <div class="form-group">
         <label for="schoolForm">Schulform *</label>
         <select id="schoolForm" required>
@@ -66,7 +70,6 @@
       <label for="schoolName">Schulname *</label>
       <select id="schoolName" required>
         <option value="">Bitte Schule auswählen</option>
-        <!-- komplette Liste (aus deinen früheren Einträgen) -->
         <option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
         <option value="Albert-Schweitzer-Schule">Albert-Schweitzer-Schule</option>
         <option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
@@ -115,11 +118,9 @@
         <option value="St.-Stephanus-Schule">St.-Stephanus-Schule</option>
         <option value="St.Peter-Schule">St.Peter-Schule</option>
         <option value="Theodor-Schwann-Kolleg">Theodor-Schwann-Kolleg</option>
-        <!-- Falls noch weitere Schulen fehlen: hier ergänzen -->
       </select>
     </div>
 
-    <!-- Gerätedaten / Seriennummer -->
     <div class="grid">
       <div class="form-group">
         <label for="serialNumber">Seriennummer</label>
@@ -153,7 +154,6 @@
       <textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden etc."></textarea>
     </div>
 
-    <!-- CSV Import (nur Seriennummern) -->
     <div class="form-group">
       <label for="csvFileInput">Seriennummern per CSV hinzufügen (nur 1. Spalte wird verwendet)</label>
       <input type="file" id="csvFileInput" accept=".csv" class="no-print">
@@ -185,9 +185,14 @@
   </form>
 </div>
 
+<!-- Unsichtbarer Bereich für Spotlight-Indexierung -->
+<div id="spotlightText"></div>
+
 <!-- html2pdf für clientseitiges PDF-Exportieren -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
+  const spotlightDiv = document.getElementById('spotlightText');
+
   // Fokus & Datum setzen
   window.addEventListener('load', function(){
     const sn = document.getElementById('serialNumber');
@@ -221,26 +226,34 @@
     return canvas.toDataURL() === blank.toDataURL();
   }
 
+  // Spotlight aktualisieren (Seriennummern + Empfänger)
+  function updateSpotlightIndex() {
+    const tbody = document.getElementById('serialsTable').querySelector('tbody');
+    const recipient = (document.getElementById('teacherName').value || '').trim();
+    spotlightDiv.textContent = '';
+    tbody.querySelectorAll('tr td').forEach(td => { spotlightDiv.textContent += td.textContent + '\n'; });
+    if (recipient) spotlightDiv.textContent += `Empfänger: ${recipient}\n`;
+  }
+
+  // Reset Form
   function resetForm(){
     document.getElementById('deliveryForm').reset();
     clearSignature();
     document.getElementById('serialsTable').querySelector('tbody').innerHTML = '';
+    spotlightDiv.textContent = '';
     const today = new Date().toISOString().slice(0,10);
     const delivery = document.getElementById('deliveryDate');
     if (delivery) delivery.value = today;
     setTimeout(()=> document.getElementById('serialNumber').focus(), 50);
   }
 
-  // CSV import: only first column used
+  // CSV-Import
   document.getElementById('csvFileInput').addEventListener('change', function(){
     const f = this.files && this.files[0];
     if (!f) return;
     const reader = new FileReader();
-    reader.onload = function(e){
-      parseCsv(e.target.result);
-    };
+    reader.onload = function(e){ parseCsv(e.target.result); };
     reader.readAsText(f);
-    // clear input to allow re-upload same file later if needed
     this.value = '';
   });
 
@@ -258,33 +271,33 @@
       const td = document.createElement('td');
       td.textContent = serial;
       tr.appendChild(td);
-      // click to copy into serial input for quick editing/scanning
       tr.addEventListener('click', ()=> {
         document.getElementById('serialNumber').value = serial;
         document.getElementById('serialNumber').focus();
+        updateSpotlightIndex();
       });
       tbody.appendChild(tr);
     });
+    updateSpotlightIndex();
   }
 
-  // Save as PDF with prompt for filename (prefilled suggestion Stadt_Schulform_Schulname_YYYY-MM-DD)
+  // Empfänger-Feld überwachen
+  document.getElementById('teacherName').addEventListener('input', updateSpotlightIndex);
+
+  // PDF speichern
   document.getElementById('savePdfBtn').addEventListener('click', async function(){
     const city = (document.getElementById('city').value || '').trim();
     const sf = (document.getElementById('schoolForm').value || '').trim();
     const sname = (document.getElementById('schoolName').value || '').trim();
-    const date = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-
-    // build suggestion
+    const date = new Date().toISOString().slice(0,10);
     const safe = str => (str || '').toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
     const suggestionBody = (city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}` : 'Lieferschein';
     const suggestion = `${suggestionBody}_${date}`;
-
     let filename = prompt('Bitte Dateinamen eingeben (ohne .pdf):', suggestion);
-    if (filename === null) return; // user cancelled
+    if (filename === null) return;
     filename = filename.trim() || 'Lieferschein';
     const finalName = filename.endsWith('.pdf') ? filename : (filename + '.pdf');
 
-    // optional checks
     if (!city || !sf || !sname) {
       if (!confirm('Stadt / Schulform / Schulname sind nicht vollständig ausgefüllt. Trotzdem speichern?')) return;
     }
@@ -301,13 +314,8 @@
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-
-    try {
-      await html2pdf().set(opt).from(element).save();
-    } catch (err) {
-      alert('Fehler beim Erstellen des PDFs: ' + (err && err.message ? err.message : err));
-      console.error(err);
-    }
+    try { await html2pdf().set(opt).from(element).save(); }
+    catch (err) { alert('Fehler beim Erstellen des PDFs: ' + (err && err.message ? err.message : err)); console.error(err); }
   });
 </script>
 </body>
