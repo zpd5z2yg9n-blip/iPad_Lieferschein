@@ -26,13 +26,51 @@
   tr:hover{background:#f1f7ff;cursor:pointer}
   .note { color:#666;font-size:13px;margin-top:4px; }
   .logo-placeholder { text-align:center; margin-bottom:10px; }
-  /* Hidden Spotlight für Mac-Index */
   #spotlightText { display:none; }
 </style>
 </head>
 <body>
 <div class="container" id="pdfRoot">
+
   <form id="deliveryForm" onsubmit="return false;">
+    <!-- Stadt / Schulform -->
+    <div class="grid">
+      <div class="form-group">
+        <label for="city">Stadt *</label>
+        <select id="city" required>
+          <option value="">Bitte Stadt wählen</option>
+          <option value="Neuss">Neuss</option>
+          <option value="Jüchen">Jüchen</option>
+          <option value="Grevenbroich">Grevenbroich</option>
+          <option value="Kaarst">Kaarst</option>
+          <option value="Meerbusch">Meerbusch</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="schoolForm">Schulform *</label>
+        <select id="schoolForm" required>
+          <option value="">Bitte auswählen</option>
+          <option value="GS">GS</option>
+          <option value="GY">GY</option>
+          <option value="GE">GE</option>
+          <option value="RS">RS</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="schoolName">Schulname *</label>
+      <select id="schoolName" required>
+        <option value="">Bitte Schule auswählen</option>
+        <option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
+        <option value="Albert-Schweitzer-Schule">Albert-Schweitzer-Schule</option>
+        <option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
+        <option value="Burgunderschule">Burgunderschule</option>
+        <!-- ... weitere Schulen ... -->
+      </select>
+    </div>
+
+    <!-- Seriennummer / Empfänger / Bemerkungen -->
     <div class="grid">
       <div class="form-group">
         <label for="serialNumber">Seriennummer *</label>
@@ -65,7 +103,7 @@
     </div>
   </form>
 
-  <!-- Hidden für Mac Index / Spotlight -->
+  <!-- Hidden für Spotlight / Index -->
   <div id="spotlightText"></div>
 </div>
 
@@ -109,21 +147,29 @@ function resetForm(){
 
 // PDF Export
 document.getElementById('savePdfBtn').addEventListener('click', async function(){
+  const city = (document.getElementById('city').value||'').trim();
+  const sf = (document.getElementById('schoolForm').value||'').trim();
+  const sname = (document.getElementById('schoolName').value||'').trim();
   const serial = document.getElementById('serialNumber').value.trim();
   const teacher = document.getElementById('teacherName').value.trim();
   const notes = document.getElementById('notes').value.trim();
 
-  if(!serial || !teacher || isCanvasBlank()){ alert('Seriennummer, Empfänger und Unterschrift müssen ausgefüllt sein!'); return; }
+  if(!serial || !teacher || !city || !sf || !sname || isCanvasBlank()){
+    alert('Bitte alle Pflichtfelder (*) ausfüllen und unterschreiben!');
+    return;
+  }
 
-  // Hidden Spotlight für Mac
+  // Hidden Spotlight
   document.getElementById('spotlightText').textContent = serial + ' | ' + teacher;
 
   const today = new Date().toISOString().slice(0,10);
-  let filename = `Lieferschein_${today}.pdf`;
+  const safe = str => str.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
+  const filename = `${safe(city)}_${safe(sf)}_${safe(sname)}_${today}.pdf`;
 
   const element = document.getElementById('pdfRoot');
-  const opt = { margin:[10,10,10,10], filename:filename, image:{type:'jpeg', quality:0.98}, html2canvas:{scale:2,useCORS:true}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
-  try{ await html2pdf().set(opt).from(element).save(); } catch(err){ alert('Fehler beim Erstellen des PDFs: '+(err.message||err)); console.error(err); }
+  const opt = { margin:[10,10,10,10], filename, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
+  try { await html2pdf().set(opt).from(element).save(); } 
+  catch(err){ alert('Fehler beim PDF: '+err); console.error(err); }
 });
 </script>
 </body>
