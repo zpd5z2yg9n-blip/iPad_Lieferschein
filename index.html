@@ -1,210 +1,243 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Lieferschein - Schulgeräte</title>
 <style>
-body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; max-width:800px; margin:20px auto; padding:20px; background:#f5f5f5; }
-.container { background:white; padding:40px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-@media print { body{background:white;margin:0;padding:0;} .container{box-shadow:none;padding:20px;max-width:100%;} .no-print{display:none !important;} .signature-container{border:1px solid #000;background:white;} canvas{border:none;} input,textarea,select{border:none;border-bottom:1px solid #333;padding:5px 0;} .info-box{display:none;} }
-h1 { color:#333; border-bottom:3px solid #007AFF; padding-bottom:10px; margin-bottom:30px;}
-.form-group{margin-bottom:20px;}
-label{display:block;font-weight:600;margin-bottom:5px;color:#555;}
-input,textarea,select{width:100%;padding:10px;border:2px solid #ddd;border-radius:5px;font-size:14px;box-sizing:border-box;}
-input:focus,textarea:focus,select:focus{outline:none;border-color:#007AFF;}
-.signature-container{border:2px dashed #007AFF;border-radius:5px;background:#f9f9f9;padding:10px;margin-top:10px;}
-canvas{border:1px solid #ddd;border-radius:5px;background:white;cursor:crosshair;display:block;width:100%;touch-action:none;}
-.button-group{display:flex;gap:10px;margin-top:10px;}
-button{padding:12px 24px;border:none;border-radius:5px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;}
-.btn-primary{background:#007AFF;color:white;}
-.btn-primary:hover{background:#0056b3;}
-.btn-secondary{background:#6c757d;color:white;}
-.btn-secondary:hover{background:#545b62;}
-.btn-danger{background:#dc3545;color:white;}
-.btn-danger:hover{background:#c82333;}
-.info-box{background:#e7f3ff;border-left:4px solid #007AFF;padding:15px;margin:20px 0;border-radius:4px;}
-.info-box h3{margin-top:0;color:#007AFF;}
-.print-button{background:#34C759;font-size:16px;padding:15px 30px;}
-.print-button:hover{background:#28a745;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media (max-width:600px){.grid{grid-template-columns:1fr;} body{padding:10px;} .container{padding:20px;}}
+body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; max-width:920px; margin:18px auto; padding:18px; background:#f5f5f5; }
+.container { background:white; padding:24px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+@media print { body{background:white;margin:0;padding:0} .container{box-shadow:none;padding:18px;max-width:100%} .no-print{display:none !important} canvas{border:none} input,textarea,select{border:none;border-bottom:1px solid #333;padding:5px 0} }
+.form-group{margin-bottom:16px}
+label{display:block;font-weight:600;margin-bottom:6px;color:#333}
+input,textarea,select{width:100%;padding:10px;border:2px solid #e9e9e9;border-radius:6px;box-sizing:border-box;font-size:14px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#007aff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){ .grid{grid-template-columns:1fr} }
+.signature-container{border:2px dashed #007aff;padding:10px;border-radius:6px;background:#fafafa}
+canvas{width:100%;height:160px;border:1px solid #ddd;border-radius:6px;background:#fff;touch-action:none; display:block}
+.button-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+button{padding:10px 18px;border-radius:6px;border:none;cursor:pointer;font-weight:600}
+.btn-primary{background:#007aff;color:#fff}
+.btn-secondary{background:#6c757d;color:#fff}
+.btn-danger{background:#dc3545;color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:8px;border:1px solid #ddd;text-align:left}
+tr:hover{background:#f1f7ff;cursor:pointer}
+.note { color:#666;font-size:13px;margin-top:4px; }
+.logo-placeholder { text-align:center; margin-bottom:10px; }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>📦 Lieferschein - Schulgeräte</h1>
+<div class="container" id="pdfRoot">
 
-<div class="info-box no-print">
-<h3>Anleitung</h3>
-<p><strong>1.</strong> Alle Felder ausfüllen<br>
-<strong>2.</strong> Mit Apple Pencil im Unterschriftsfeld unterschreiben<br>
-<strong>3.</strong> "🖨️ Drucken / Als PDF speichern" klicken<br>
-<strong>4.</strong> Im Druckdialog "Als PDF exportieren" wählen und Speicherort auswählen</p>
-</div>
+<form id="deliveryForm" onsubmit="return false;">
+  <!-- Stadt / Schulform -->
+  <div class="grid">
+    <div class="form-group">
+      <label for="city">Stadt *</label>
+      <select id="city" required>
+        <option value="">Bitte Stadt wählen</option>
+        <option value="Neuss">Neuss</option>
+        <option value="Jüchen">Jüchen</option>
+        <option value="Grevenbroich">Grevenbroich</option>
+        <option value="Kaarst">Kaarst</option>
+        <option value="Meerbusch">Meerbusch</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="schoolForm">Schulform *</label>
+      <select id="schoolForm" required>
+        <option value="">Bitte auswählen</option>
+        <option value="GS">GS</option>
+        <option value="GY">GY</option>
+        <option value="GE">GE</option>
+        <option value="RS">RS</option>
+      </select>
+    </div>
+  </div>
 
-<form id="deliveryForm">
+  <div class="form-group">
+    <label for="schoolName">Schulname *</label>
+    <select id="schoolName" required>
+      <option value="">Bitte Schule auswählen</option>
+      <option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
+      <option value="Albert-Schweitzer-Schule">Albert-Schweitzer-Schule</option>
+      <option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
+      <option value="Burgunderschule">Burgunderschule</option>
+      <option value="Comenius-Schule">Comenius-Schule</option>
+      <option value="Die Brücke">Die Brücke</option>
+      <option value="Dreikönigenschule">Dreikönigenschule</option>
+      <option value="Friedrich-von-Bodelschwingh-Schule">Friedrich-von-Bodelschwingh-Schule</option>
+      <option value="Gesamtschule an der Erft">Gesamtschule an der Erft</option>
+      <option value="Gymnasium Norf">Gymnasium Norf</option>
+      <!-- weitere Schulen hier ergänzen -->
+    </select>
+  </div>
 
-<!-- Seriennummer manuell oder Barcode -->
-<div class="form-group">
-<label for="serialNumber">Seriennummer *</label>
-<input type="text" id="serialNumber" required placeholder="Barcode scannen oder eintippen">
-</div>
+  <!-- Gerätedaten / Seriennummer -->
+  <div class="grid">
+    <div class="form-group">
+      <label for="serialNumber">Seriennummer *</label>
+      <input type="text" id="serialNumber" placeholder="Barcode scannen oder eintippen">
+      <div class="note">Fokus beim Laden aktiviert — einfach scannen.</div>
+    </div>
+    <div class="form-group">
+      <label for="deviceName">Gerätename</label>
+      <input type="text" id="deviceName" placeholder="z. B. iPad Pro 11">
+    </div>
+  </div>
 
-<div class="grid">
-<div class="form-group">
-<label for="deviceName">Gerätename *</label>
-<input type="text" id="deviceName" required placeholder="z.B. iPad Pro 11">
-</div>
-<div class="form-group">
-<label for="deviceType">Gerätetyp *</label>
-<select id="deviceType" required>
-<option value="">Bitte auswählen</option>
-<option value="iPad">iPad</option>
-<option value="iPad Pro">iPad Pro</option>
-<option value="iPad Air">iPad Air</option>
-<option value="MacBook">MacBook</option>
-<option value="MacBook Air">MacBook Air</option>
-<option value="MacBook Pro">MacBook Pro</option>
-<option value="Apple Pencil">Apple Pencil</option>
-<option value="Zubehör">Zubehör</option>
-</select>
-</div>
-</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="deliveryDate">Ausgabedatum</label>
+      <input type="date" id="deliveryDate">
+    </div>
+    <div class="form-group">
+      <label for="teacherName">Name des Empfängers</label>
+      <input type="text" id="teacherName" placeholder="Vor- und Nachname">
+    </div>
+  </div>
 
-<div class="grid">
-<div class="form-group">
-<label for="deliveryDate">Ausgabedatum *</label>
-<input type="date" id="deliveryDate" required>
-</div>
-<div class="form-group">
-<label for="schoolName">Schulname *</label>
-<select id="schoolName" required>
-<option value="">Bitte Schule auswählen</option>
-<option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
-<option value="Albert-Schweitzer-Schule">Albert-Schweitzer-Schule</option>
-<option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
-<option value="Burgunderschule">Burgunderschule</option>
-<option value="Comenius-Schule">Comenius-Schule</option>
-<option value="Die Brücke">Die Brücke</option>
-<option value="Dreikönigenschule">Dreikönigenschule</option>
-<option value="Friedrich-von-Bodelschwingh-Schule">Friedrich-von-Bodelschwingh-Schule</option>
-<option value="Gesamtschule an der Erft">Gesamtschule an der Erft</option>
-<option value="Gymnasium Norf">Gymnasium Norf</option>
-<!-- alle weiteren Schulen hier einfügen -->
-</select>
-</div>
-</div>
+  <div class="form-group">
+    <label for="schoolClass">Klasse / Abteilung</label>
+    <input type="text" id="schoolClass" placeholder="z. B. 5a, Verwaltung">
+  </div>
 
-<div class="grid">
-<div class="form-group">
-<label for="teacherName">Name des Empfängers *</label>
-<input type="text" id="teacherName" required placeholder="Vor- und Nachname">
-</div>
-<div class="form-group">
-<label for="schoolClass">Klasse/Abteilung</label>
-<input type="text" id="schoolClass" placeholder="z.B. 5a, Verwaltung">
-</div>
-</div>
+  <div class="form-group">
+    <label for="notes">Bemerkungen</label>
+    <textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden etc."></textarea>
+  </div>
 
-<div class="form-group">
-<label for="notes">Bemerkungen</label>
-<textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden, etc."></textarea>
-</div>
+  <!-- CSV Import -->
+  <div class="form-group">
+    <label for="csvFileInput">Seriennummern per CSV hinzufügen</label>
+    <input type="file" id="csvFileInput" accept=".csv" class="no-print">
+    <div class="note">CSV: Seriennummer, Gerätetyp, Schüler, Klasse, Bemerkung. Kopfzeile optional.</div>
+  </div>
 
-<!-- CSV Import -->
-<div class="form-group">
-<label>Seriennummern per CSV hinzufügen</label>
-<input type="file" id="csvFileInput" accept=".csv" class="no-print">
-</div>
+  <div class="form-group">
+    <h3>Geräte / Seriennummern</h3>
+    <table id="serialsTable">
+      <thead>
+        <tr><th>Seriennummer</th><th>Gerätetyp</th><th>Schüler</th><th>Klasse</th><th>Bemerkung</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-<div class="form-group">
-<h3>Geräte / Seriennummern</h3>
-<table id="serialsTable" border="1" style="width:100%; border-collapse: collapse;">
-<thead>
-<tr><th>Seriennummer</th><th>Gerätetyp</th><th>Schüler</th><th>Klasse</th><th>Bemerkung</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
+  <div class="form-group">
+    <label>Unterschrift Schule</label>
+    <div class="signature-container">
+      <canvas id="signatureCanvas" width="700" height="160"></canvas>
+      <div class="button-group no-print" style="margin-top:8px">
+        <button type="button" class="btn-danger" onclick="clearSignature()">Unterschrift löschen</button>
+      </div>
+    </div>
+  </div>
 
-<div class="form-group">
-<label>Unterschrift Schule *</label>
-<div class="signature-container">
-<canvas id="signatureCanvas" width="700" height="200"></canvas>
-<div class="button-group no-print">
-<button type="button" class="btn-danger" onclick="clearSignature()">Unterschrift löschen</button>
-</div>
-</div>
-</div>
-
-<div class="button-group no-print">
-<button type="button" class="btn-primary print-button" onclick="printDocument()">🖨️ Drucken / Als PDF speichern</button>
-<button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
-</div>
+  <div class="button-group no-print" style="margin-top:12px">
+    <button type="button" class="btn-primary" id="savePdfBtn">💾 Als PDF speichern</button>
+    <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
+  </div>
 </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
-// Datum auf heute setzen
-document.getElementById('deliveryDate').valueAsDate = new Date();
-
-// Fokus auf Seriennummer setzen
-window.addEventListener('load', function() {
-    document.getElementById('serialNumber').focus();
+// Fokus & Datum setzen
+window.addEventListener('load', function(){
+  const sn = document.getElementById('serialNumber');
+  if(sn){ sn.focus(); sn.select(); }
+  const delivery = document.getElementById('deliveryDate');
+  const today = new Date().toISOString().slice(0,10);
+  if(delivery && !delivery.value) delivery.value = today;
 });
 
 // Signature Canvas
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
-let isDrawing=false,lastX=0,lastY=0;
-canvas.addEventListener('mousedown',startDrawing);
-canvas.addEventListener('mousemove',draw);
-canvas.addEventListener('mouseup',stopDrawing);
-canvas.addEventListener('mouseout',stopDrawing);
-canvas.addEventListener('touchstart',handleTouchStart);
-canvas.addEventListener('touchmove',handleTouchMove);
-canvas.addEventListener('touchend',stopDrawing);
-function startDrawing(e){isDrawing=true; const rect=canvas.getBoundingClientRect(); lastX=e.clientX-rect.left; lastY=e.clientY-rect.top;}
-function draw(e){if(!isDrawing)return; const rect=canvas.getBoundingClientRect(); const x=e.clientX-rect.left; const y=e.clientY-rect.top; ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke(); lastX=x; lastY=y;}
-function stopDrawing(){isDrawing=false;}
-function handleTouchStart(e){e.preventDefault(); const touch=e.touches[0]; const rect=canvas.getBoundingClientRect(); lastX=touch.clientX-rect.left; lastY=touch.clientY-rect.top; isDrawing=true;}
-function handleTouchMove(e){e.preventDefault(); if(!isDrawing)return; const touch=e.touches[0]; const rect=canvas.getBoundingClientRect(); const x=touch.clientX-rect.left; const y=touch.clientY-rect.top; ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke(); lastX=x; lastY=y;}
-function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);}
-function resetForm(){document.getElementById('deliveryForm').reset(); clearSignature(); document.getElementById('deliveryDate').valueAsDate=new Date(); document.getElementById('serialsTable').querySelector('tbody').innerHTML='';}
-function isCanvasBlank(){const blank=document.createElement('canvas'); blank.width=canvas.width; blank.height=canvas.height; return canvas.toDataURL()===blank.toDataURL();}
-function printDocument(){const form=document.getElementById('deliveryForm'); if(!form.checkValidity()){alert('Bitte füllen Sie alle Pflichtfelder (*) aus!'); form.reportValidity(); return;} if(isCanvasBlank()){alert('Bitte unterschreiben Sie das Formular!'); return;} window.print();}
+let drawing=false, lastX=0, lastY=0;
+function getXYFromEvent(e){
+  const rect = canvas.getBoundingClientRect();
+  if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-rect.left, y:e.touches[0].clientY-rect.top};
+  return {x:e.clientX-rect.left, y:e.clientY-rect.top};
+}
+canvas.addEventListener('mousedown', e=>{ drawing=true; const p=getXYFromEvent(e); lastX=p.x; lastY=p.y; });
+canvas.addEventListener('mousemove', e=>{ if(!drawing) return; const p=getXYFromEvent(e); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; });
+canvas.addEventListener('mouseup', ()=>{ drawing=false; });
+canvas.addEventListener('mouseout', ()=>{ drawing=false; });
+canvas.addEventListener('touchstart', e=>{ e.preventDefault(); drawing=true; const p=getXYFromEvent(e); lastX=p.x; lastY=p.y; });
+canvas.addEventListener('touchmove', e=>{ e.preventDefault(); if(!drawing) return; const p=getXYFromEvent(e); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; });
+canvas.addEventListener('touchend', ()=>{ drawing=false; });
+function clearSignature(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+function isCanvasBlank(){ const blank=document.createElement('canvas'); blank.width=canvas.width; blank.height=canvas.height; return canvas.toDataURL()===blank.toDataURL(); }
+function resetForm(){
+  document.getElementById('deliveryForm').reset();
+  clearSignature();
+  document.getElementById('serialsTable').querySelector('tbody').innerHTML='';
+  const today = new Date().toISOString().slice(0,10);
+  const delivery = document.getElementById('deliveryDate');
+  if(delivery) delivery.value=today;
+  setTimeout(()=>{ const sn=document.getElementById('serialNumber'); sn.focus(); sn.select(); },50);
+}
 
-// CSV Import automatisch beim Auswählen
-document.getElementById('csvFileInput').addEventListener('change', function() {
-    const fileInput = this;
-    if (!fileInput.files.length) return;
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e){
-        const text = e.target.result;
-        parseCsv(text);
-    };
-    reader.readAsText(file);
+// CSV Import: mehrere Spalten, alle Zeilen automatisch in Tabelle
+document.getElementById('csvFileInput').addEventListener('change', function(){
+  const f=this.files[0];
+  if(!f) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const lines=e.target.result.split(/\r?\n/);
+    const tbody=document.getElementById('serialsTable').querySelector('tbody');
+    tbody.innerHTML='';
+    const snInput=document.getElementById('serialNumber');
+    lines.forEach(line=>{
+      if(!line.trim()) return;
+      const cols=line.split(',');
+      const serial=cols[0]?cols[0].trim().replace(/^"|"$/g,''):'';
+      const deviceType=cols[1]?cols[1].trim():'';
+      const student=cols[2]?cols[2].trim():'';
+      const klass=cols[3]?cols[3].trim():'';
+      const note=cols[4]?cols[4].trim():'';
+      if(!serial) return;
+      const tr=document.createElement('tr');
+      [serial,deviceType,student,klass,note].forEach(v=>{ const td=document.createElement('td'); td.textContent=v; tr.appendChild(td); });
+      tr.addEventListener('click', ()=>{ snInput.value=serial; snInput.focus(); snInput.select(); });
+      tbody.appendChild(tr);
+    });
+    // Input-Feld immer bereit für neuen Scan
+    snInput.focus(); snInput.select();
+  };
+  reader.readAsText(f);
+  this.value='';
 });
 
-// CSV Parser für mehrere Spalten
-function parseCsv(csvText){
-    const lines = csvText.split(/\r?\n/);
-    const tbody = document.getElementById('serialsTable').querySelector('tbody');
-    tbody.innerHTML='';
-    lines.forEach(line=>{
-        if(!line.trim()) return;
-        const cols=line.split(',');
-        const serial=cols[0]?cols[0].trim():'';
-        const deviceType=cols[1]?cols[1].trim():'';
-        const student=cols[2]?cols[2].trim():'';
-        const klass=cols[3]?cols[3].trim():'';
-        const note=cols[4]?cols[4].trim():'';
-        if(!serial) return;
-        const tr=document.createElement('tr');
-        [serial,deviceType,student,klass,note].forEach(val=>{const td=document.createElement('td'); td.textContent=val; tr.appendChild(td);});
-        tbody.appendChild(tr);
-    });
-}
+// PDF speichern
+document.getElementById('savePdfBtn').addEventListener('click', async function(){
+  const city=(document.getElementById('city').value||'').trim();
+  const sf=(document.getElementById('schoolForm').value||'').trim();
+  const sname=(document.getElementById('schoolName').value||'').trim();
+  const date=new Date().toISOString().slice(0,10);
+  const safe=str=> (str||'').toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
+  const suggestion=(city && sf && sname)?`${safe(city)}_${safe(sf)}_${safe(sname)}`:'Lieferschein';
+  let filename=prompt('Bitte Dateinamen eingeben (ohne .pdf):',suggestion);
+  if(filename===null) return;
+  filename=filename.trim()||'Lieferschein';
+  const finalName=filename.endsWith('.pdf')?filename:(filename+'.pdf');
+  const tbody=document.getElementById('serialsTable').querySelector('tbody');
+  if(!city || !sf || !sname){ if(!confirm('Stadt / Schulform / Schulname sind nicht vollständig ausgefüllt. Trotzdem speichern?')) return; }
+  if(!tbody || !tbody.querySelector('tr')){ if(!confirm('Es sind keine Seriennummern vorhanden. Trotzdem speichern?')) return; }
+  const element=document.getElementById('pdfRoot');
+  const opt={
+    margin:[10,10,10,10],
+    filename:finalName,
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  };
+  try{ await html2pdf().set(opt).from(element).save(); } catch(err){ alert('Fehler beim Erstellen des PDFs: '+(err&&err.message?err.message:err)); console.error(err); }
+});
 </script>
+</body>
+</html>
