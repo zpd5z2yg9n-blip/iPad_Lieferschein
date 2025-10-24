@@ -22,14 +22,15 @@ button{padding:10px 18px;border-radius:6px;border:none;cursor:pointer;font-weigh
 .btn-secondary{background:#6c757d;color:#fff}
 .btn-danger{background:#dc3545;color:#fff}
 table{width:100%;border-collapse:collapse;margin-top:8px}
-th,td{padding:8px;border:1px solid #ddd;text-align:left}
+th,td{padding:8px;border:1px solid #ddd;text-align:left;font-size:13px}
 tr:hover{background:#f1f7ff;cursor:pointer}
 .note { color:#666;font-size:13px;margin-top:4px; }
-.hidden-for-display { display:none !important; } /* unsichtbar für Layout, aber im PDF Text vorhanden */
 </style>
 </head>
 <body>
 <div class="container" id="pdfRoot">
+
+<h2 style="border-bottom:3px solid #007aff;padding-bottom:8px">📦 Lieferschein - Schulgeräte</h2>
 
 <form id="deliveryForm" onsubmit="return false;">
 
@@ -68,8 +69,42 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     <option value="Comenius-Schule">Comenius-Schule</option>
     <option value="Die Brücke">Die Brücke</option>
     <option value="Dreikönigenschule">Dreikönigenschule</option>
+    <option value="Friedrich-von-Bodelschwingh-Schule">Friedrich-von-Bodelschwingh-Schule</option>
+    <option value="Ganztagsrealschule Norf">Ganztagsrealschule Norf</option>
+    <option value="Gebrüder-Grimm-Schule">Gebrüder-Grimm-Schule</option>
+    <option value="Gesamtschule an der Erft">Gesamtschule an der Erft</option>
+    <option value="Gesamtschule Nordstadt">Gesamtschule Nordstadt</option>
+    <option value="Gesamtschule Norf">Gesamtschule Norf</option>
+    <option value="Geschwister-Scholl-Grundschule">Geschwister-Scholl-Grundschule</option>
+    <option value="Görresschule">Görresschule</option>
+    <option value="Grundschule Allerheiligen">Grundschule Allerheiligen</option>
     <option value="Gymnasium Norf">Gymnasium Norf</option>
-    <!-- weitere Schulen ergänzen -->
+    <option value="Herbert-Karrenberg-Schule">Herbert-Karrenberg-Schule</option>
+    <option value="Janusz-Korczak-Gesamtschule">Janusz-Korczak-Gesamtschule</option>
+    <option value="Karl-Kreiner-Schule">Karl-Kreiner-Schule</option>
+    <option value="Kreuzschule">Kreuzschule</option>
+    <option value="Kyburg">Kyburg</option>
+    <option value="Leoschule">Leoschule</option>
+    <option value="Marie-Curie-Gymnasium">Marie-Curie-Gymnasium</option>
+    <option value="Martin-Luther-Schule">Martin-Luther-Schule</option>
+    <option value="Martinus-Schule Holzheim">Martinus-Schule Holzheim</option>
+    <option value="Maximilian-Kolbe-Schule">Maximilian-Kolbe-Schule</option>
+    <option value="Münsterschule">Münsterschule</option>
+    <option value="Nelly-Sachs-Gymnasium">Nelly-Sachs-Gymnasium</option>
+    <option value="Pestalozzischule">Pestalozzischule</option>
+    <option value="Quirinus-Gymnasium">Quirinus-Gymnasium</option>
+    <option value="Realschule Holzheim">Realschule Holzheim</option>
+    <option value="Rita-Süssmuth-Realschule">Rita-Süssmuth-Realschule</option>
+    <option value="Realschule Südstadt">Realschule Südstadt</option>
+    <option value="Richard-Schirrman-Schule">Richard-Schirrman-Schule</option>
+    <option value="Sekundarschule Neuss">Sekundarschule Neuss</option>
+    <option value="St.-Andreas-Schule">St.-Andreas-Schule</option>
+    <option value="St.-Hubertus-Schule">St.-Hubertus-Schule</option>
+    <option value="St.-Konrad-Schule">St.-Konrad-Schule</option>
+    <option value="St.-Martinus-Schule">St.-Martinus-Schule</option>
+    <option value="St.-Stephanus-Schule">St.-Stephanus-Schule</option>
+    <option value="St.Peter-Schule">St.Peter-Schule</option>
+    <option value="Theodor-Schwann-Kolleg">Theodor-Schwann-Kolleg</option>
   </select>
 </div>
 
@@ -105,23 +140,26 @@ tr:hover{background:#f1f7ff;cursor:pointer}
 </div>
 
 <!-- CSV Import -->
-<div class="form-group">
+<div class="form-group no-print">
   <label for="csvFileInput">CSV hinzufügen (Seriennummer, Gerätetyp, Schüler, Klasse, Bemerkung)</label>
-  <input type="file" id="csvFileInput" accept=".csv" class="no-print">
+  <input type="file" id="csvFileInput" accept=".csv">
   <div class="note">CSV: erste Zeile optional. Mehrere Spalten möglich.</div>
+</div>
+
+<div class="form-group no-print">
+  <div class="button-group">
+    <button type="button" class="btn-primary" onclick="addDeviceToTable()">➕ Gerät zur Liste hinzufügen</button>
+  </div>
 </div>
 
 <!-- Tabelle -->
 <div class="form-group">
   <h3>Geräte / Seriennummern</h3>
   <table id="serialsTable">
-    <thead><tr><th>Seriennummer</th><th>Gerätetyp</th><th>Schüler</th><th>Klasse</th><th>Bemerkung</th></tr></thead>
+    <thead><tr><th>Seriennummer</th><th>Gerätetyp</th><th>Schüler</th><th>Klasse</th><th>Bemerkung</th><th class="no-print">Aktion</th></tr></thead>
     <tbody></tbody>
   </table>
 </div>
-
-<!-- Unsichtbares Feld für Spotlight -->
-<textarea id="spotlightText" class="hidden-for-display"></textarea>
 
 <!-- Signature -->
 <div class="form-group">
@@ -135,14 +173,15 @@ tr:hover{background:#f1f7ff;cursor:pointer}
 </div>
 
 <div class="button-group no-print" style="margin-top:12px">
-  <button type="button" class="btn-primary" id="savePdfBtn">💾 Als PDF speichern</button>
+  <button type="button" class="btn-primary" id="savePdfBtn">💾 Als PDF speichern (durchsuchbar)</button>
   <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
 </div>
 
 </form>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // Fokus & Datum setzen
 window.addEventListener('load', function(){
@@ -171,10 +210,61 @@ function resetForm(){
   document.getElementById('deliveryForm').reset();
   clearSignature();
   document.getElementById('serialsTable').querySelector('tbody').innerHTML='';
-  document.getElementById('spotlightText').value='';
   const today=new Date().toISOString().slice(0,10);
   const delivery=document.getElementById('deliveryDate'); if(delivery) delivery.value=today;
   setTimeout(()=>document.getElementById('serialNumber').focus(),50);
+}
+
+// Gerät zur Tabelle hinzufügen
+function addDeviceToTable(){
+  const serial = document.getElementById('serialNumber').value.trim();
+  const deviceName = document.getElementById('deviceName').value.trim();
+  const teacherName = document.getElementById('teacherName').value.trim();
+  const schoolClass = document.getElementById('schoolClass').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+  
+  if(!serial){
+    alert('Bitte Seriennummer eingeben');
+    return;
+  }
+  
+  const tbody = document.getElementById('serialsTable').querySelector('tbody');
+  const tr = document.createElement('tr');
+  
+  [serial, deviceName, teacherName, schoolClass, notes].forEach(v => {
+    const td = document.createElement('td');
+    td.textContent = v;
+    tr.appendChild(td);
+  });
+  
+  // Löschen-Button
+  const tdAction = document.createElement('td');
+  tdAction.className = 'no-print';
+  const btnDel = document.createElement('button');
+  btnDel.textContent = '🗑️';
+  btnDel.className = 'btn-danger';
+  btnDel.style.padding = '4px 8px';
+  btnDel.onclick = () => tr.remove();
+  tdAction.appendChild(btnDel);
+  tr.appendChild(tdAction);
+  
+  // Klick um Zeile zu bearbeiten
+  tr.addEventListener('click', (e) => {
+    if(e.target.tagName === 'BUTTON') return;
+    document.getElementById('serialNumber').value = serial;
+    document.getElementById('deviceName').value = deviceName;
+    document.getElementById('teacherName').value = teacherName;
+    document.getElementById('schoolClass').value = schoolClass;
+    document.getElementById('notes').value = notes;
+  });
+  
+  tbody.appendChild(tr);
+  
+  // Felder leeren
+  document.getElementById('serialNumber').value = '';
+  document.getElementById('deviceName').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('serialNumber').focus();
 }
 
 // CSV Import
@@ -183,50 +273,162 @@ document.getElementById('csvFileInput').addEventListener('change', function(){
   const reader = new FileReader();
   reader.onload = function(e){ parseCsv(e.target.result); }
   reader.readAsText(f);
-  this.value=''; // clear to allow re-upload
+  this.value='';
 });
 
 function parseCsv(text){
   const lines = text.split(/\r?\n/);
-  const tbody=document.getElementById('serialsTable').querySelector('tbody');
-  tbody.innerHTML='';
-  const spotlightArr=[];
-  lines.forEach(line=>{
+  const tbody = document.getElementById('serialsTable').querySelector('tbody');
+  
+  lines.forEach(line => {
     if(!line.trim()) return;
-    const cols=line.split(',');
-    const serial=cols[0]?cols[0].trim():'';
-    const type=cols[1]?cols[1].trim():'';
-    const student=cols[2]?cols[2].trim():'';
-    const klass=cols[3]?cols[3].trim():'';
-    const note=cols[4]?cols[4].trim():'';
+    const cols = line.split(',');
+    const serial = cols[0] ? cols[0].trim() : '';
+    const type = cols[1] ? cols[1].trim() : '';
+    const student = cols[2] ? cols[2].trim() : '';
+    const klass = cols[3] ? cols[3].trim() : '';
+    const note = cols[4] ? cols[4].trim() : '';
+    
     if(!serial) return;
-    const tr=document.createElement('tr');
-    [serial,type,student,klass,note].forEach(v=>{const td=document.createElement('td'); td.textContent=v; tr.appendChild(td);});
-    tr.addEventListener('click',()=>{document.getElementById('serialNumber').value=serial; document.getElementById('serialNumber').focus();});
+    
+    const tr = document.createElement('tr');
+    [serial, type, student, klass, note].forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    
+    // Löschen-Button
+    const tdAction = document.createElement('td');
+    tdAction.className = 'no-print';
+    const btnDel = document.createElement('button');
+    btnDel.textContent = '🗑️';
+    btnDel.className = 'btn-danger';
+    btnDel.style.padding = '4px 8px';
+    btnDel.onclick = () => tr.remove();
+    tdAction.appendChild(btnDel);
+    tr.appendChild(tdAction);
+    
+    tr.addEventListener('click', (e) => {
+      if(e.target.tagName === 'BUTTON') return;
+      document.getElementById('serialNumber').value = serial;
+      document.getElementById('deviceName').value = type;
+      document.getElementById('teacherName').value = student;
+      document.getElementById('schoolClass').value = klass;
+      document.getElementById('notes').value = note;
+    });
+    
     tbody.appendChild(tr);
-    spotlightArr.push([serial,type,student,klass,note].join('\t'));
   });
-  // in unsichtbares textarea schreiben für Spotlight
-  document.getElementById('spotlightText').value = spotlightArr.join('\n');
 }
 
-// PDF speichern
+// PDF speichern mit durchsuchbarem Text
 document.getElementById('savePdfBtn').addEventListener('click', async function(){
-  const city=(document.getElementById('city').value||'').trim();
-  const sf=(document.getElementById('schoolForm').value||'').trim();
-  const sname=(document.getElementById('schoolName').value||'').trim();
-  const date=new Date().toISOString().slice(0,10);
-  const safe=str=>str.toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
-  const suggestion=(city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}` : 'Lieferschein';
-  let filename = prompt('Bitte Dateinamen eingeben (ohne .pdf):', suggestion+'_'+date);
-  if(filename===null) return; filename=filename.trim()||'Lieferschein'; const finalName=filename.endsWith('.pdf')?filename:(filename+'.pdf');
-  if(!city || !sf || !sname) if(!confirm('Stadt/Schulform/Schulname nicht vollständig. Trotzdem speichern?')) return;
-  const tbody=document.getElementById('serialsTable').querySelector('tbody');
-  if(!tbody || !tbody.querySelector('tr')) if(!confirm('Keine Seriennummern vorhanden. Trotzdem speichern?')) return;
-  const element=document.getElementById('pdfRoot');
-  const opt={margin:[10,10,10,10],filename:finalName,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
-  try{ await html2pdf().set(opt).from(element).save(); }
-  catch(err){alert('Fehler beim Erstellen des PDFs: '+(err&&err.message?err.message:err)); console.error(err);}
+  const { jsPDF } = window.jspdf;
+  
+  const city = (document.getElementById('city').value || '').trim();
+  const sf = (document.getElementById('schoolForm').value || '').trim();
+  const sname = (document.getElementById('schoolName').value || '').trim();
+  const date = new Date().toISOString().slice(0,10);
+  
+  const safe = str => str.toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
+  const suggestion = (city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}` : 'Lieferschein';
+  
+  let filename = prompt('Bitte Dateinamen eingeben (ohne .pdf):', suggestion + '_' + date);
+  if(filename === null) return;
+  filename = filename.trim() || 'Lieferschein';
+  const finalName = filename.endsWith('.pdf') ? filename : (filename + '.pdf');
+  
+  if(!city || !sf || !sname){
+    if(!confirm('Stadt/Schulform/Schulname nicht vollständig. Trotzdem speichern?')) return;
+  }
+  
+  const tbody = document.getElementById('serialsTable').querySelector('tbody');
+  if(!tbody || !tbody.querySelector('tr')){
+    if(!confirm('Keine Seriennummern vorhanden. Trotzdem speichern?')) return;
+  }
+  
+  try {
+    // Erstelle Canvas vom sichtbaren Inhalt
+    const element = document.getElementById('pdfRoot');
+    const canvasImg = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+    
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvasImg.toDataURL('image/jpeg', 0.95);
+    const imgWidth = 210;
+    const imgHeight = (canvasImg.height * imgWidth) / canvasImg.width;
+    
+    // Füge Bild hinzu
+    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+    
+    // KRITISCH: Füge unsichtbaren durchsuchbaren Text hinzu
+    pdf.setFontSize(8);
+    pdf.setTextColor(255, 255, 255); // Weiß = unsichtbar
+    
+    let yPos = 10;
+    
+    // Schuldaten als durchsuchbarer Text
+    pdf.text(`Stadt: ${city}`, 5, yPos); yPos += 5;
+    pdf.text(`Schulform: ${sf}`, 5, yPos); yPos += 5;
+    pdf.text(`Schule: ${sname}`, 5, yPos); yPos += 5;
+    pdf.text(`Datum: ${document.getElementById('deliveryDate').value}`, 5, yPos); yPos += 5;
+    pdf.text(`Empfänger: ${document.getElementById('teacherName').value}`, 5, yPos); yPos += 5;
+    
+    // Alle Seriennummern aus Tabelle als durchsuchbaren Text
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if(cells.length >= 5){
+        const serial = cells[0].textContent.trim();
+        const type = cells[1].textContent.trim();
+        const student = cells[2].textContent.trim();
+        const klass = cells[3].textContent.trim();
+        const note = cells[4].textContent.trim();
+        
+        pdf.text(`Seriennummer: ${serial}`, 5, yPos); yPos += 4;
+        if(type) pdf.text(`Typ: ${type}`, 5, yPos); yPos += 4;
+        if(student) pdf.text(`Schüler: ${student}`, 5, yPos); yPos += 4;
+        if(klass) pdf.text(`Klasse: ${klass}`, 5, yPos); yPos += 4;
+        if(note) pdf.text(`Bemerkung: ${note}`, 5, yPos); yPos += 4;
+        yPos += 3;
+        
+        // Wenn Seite voll, neue Seite für weiteren Text
+        if(yPos > 280){
+          pdf.addPage();
+          yPos = 10;
+        }
+      }
+    });
+    
+    // PDF-Metadaten setzen (auch für Spotlight)
+    const allSerials = Array.from(rows).map(r => r.querySelector('td')?.textContent || '').filter(s => s).join(', ');
+    pdf.setProperties({
+      title: `Lieferschein ${sname} ${date}`,
+      subject: `Geräteausgabe ${city}`,
+      author: sname,
+      keywords: `Seriennummern: ${allSerials}`,
+      creator: 'Lieferschein-System'
+    });
+    
+    pdf.save(finalName);
+    alert('PDF erfolgreich erstellt und gespeichert!\n\nDas PDF enthält durchsuchbaren Text für Spotlight.');
+    
+  } catch(err) {
+    alert('Fehler beim Erstellen des PDFs: ' + (err && err.message ? err.message : err));
+    console.error(err);
+  }
+});
+
+// Enter-Taste zum Hinzufügen
+document.getElementById('serialNumber').addEventListener('keypress', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    addDeviceToTable();
+  }
 });
 </script>
 </body>
