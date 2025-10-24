@@ -434,9 +434,12 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
     // Füge Bild hinzu
     pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
     
+    // Neue Seite für unsichtbaren Text (verhindert Ghosting)
+    pdf.addPage();
+    
     // KRITISCH: Füge unsichtbaren durchsuchbaren Text hinzu
     pdf.setFontSize(8);
-    pdf.setTextColor(255, 255, 255); // Weiß = unsichtbar
+    pdf.setTextColor(255, 255, 255); // Weiß = unsichtbar auf weißem Hintergrund
     
     let yPos = 10;
     
