@@ -5,39 +5,180 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lieferschein - Schulgeräte</title>
 <style>
-body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; max-width:920px; margin:18px auto; padding:18px; background:#f5f5f5; }
-.container { background:white; padding:24px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-@media print { body{background:white;margin:0;padding:0} .container{box-shadow:none;padding:18px;max-width:100%} .no-print{display:none !important} canvas{border:none} input,textarea,select{border:none;border-bottom:1px solid #333;padding:5px 0} }
+:root {
+  --bg-color: #f5f5f5;
+  --container-bg: white;
+  --primary-color: #0d5f8a;
+  --accent-color: #007aff;
+}
+
+body { 
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; 
+  max-width:920px; 
+  margin:18px auto; 
+  padding:18px; 
+  background: var(--bg-color);
+  /* Optional: Hintergrundbild - auskommentiert
+  background-image: url('hintergrund.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  */
+}
+
+.container { 
+  background: var(--container-bg); 
+  padding:24px; 
+  border-radius:8px; 
+  box-shadow:0 2px 10px rgba(0,0,0,0.08); 
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px 0;
+}
+
+.logo-container img {
+  max-width: 280px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .logo-container img {
+    max-width: 200px;
+  }
+}
+
+.divider {
+  height: 3px;
+  background: var(--primary-color);
+  margin: 20px 0 30px 0;
+  border-radius: 2px;
+}
+
+/* KRITISCH für Spotlight: Alle Inhalte müssen im Print sichtbar sein als TEXT */
+@media print { 
+  body{background:white;margin:0;padding:0} 
+  .container{box-shadow:none;padding:18px;max-width:100%} 
+  .no-print{display:none !important} 
+  canvas{border:none}
+  
+  .logo-container {
+    padding: 10px 0;
+    margin-bottom: 15px;
+  }
+  
+  .logo-container img {
+    max-width: 200px;
+  }
+  
+  /* Formularfelder als Text darstellen */
+  input, textarea, select {
+    border:none;
+    border-bottom:1px solid #333;
+    padding:5px 0;
+    -webkit-appearance: none;
+    background: transparent;
+  }
+  
+  /* Tabelle gut sichtbar */
+  table { page-break-inside: avoid; }
+  th, td { border: 1px solid #333; }
+}
+
 .form-group{margin-bottom:16px}
-label{display:block;font-weight:600;margin-bottom:6px;color:#333}
-input,textarea,select{width:100%;padding:10px;border:2px solid #e9e9e9;border-radius:6px;box-sizing:border-box;font-size:14px}
-input:focus,textarea:focus,select:focus{outline:none;border-color:#007aff}
+label{display:block;font-weight:600;margin-bottom:6px;color:#333;font-size:14px}
+input,textarea,select{
+  width:100%;
+  padding:10px;
+  border:2px solid #e9e9e9;
+  border-radius:6px;
+  box-sizing:border-box;
+  font-size:14px;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent-color)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:640px){ .grid{grid-template-columns:1fr} }
-.signature-container{border:2px dashed #007aff;padding:10px;border-radius:6px;background:#fafafa}
+.signature-container{border:2px dashed var(--accent-color);padding:10px;border-radius:6px;background:#fafafa}
 canvas{width:100%;height:160px;border:1px solid #ddd;border-radius:6px;background:#fff;touch-action:none; display:block}
 .button-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 button{padding:10px 18px;border-radius:6px;border:none;cursor:pointer;font-weight:600}
-.btn-primary{background:#007aff;color:#fff}
+.btn-primary{background:var(--accent-color);color:#fff}
 .btn-secondary{background:#6c757d;color:#fff}
 .btn-danger{background:#dc3545;color:#fff}
 table{width:100%;border-collapse:collapse;margin-top:8px}
 th,td{padding:8px;border:1px solid #ddd;text-align:left;font-size:13px}
-tr:hover{background:#f1f7ff;cursor:pointer}
+tbody tr:hover{background:#f1f7ff;cursor:pointer}
 .note { color:#666;font-size:13px;margin-top:4px; }
+
+/* Serial number field highlight */
+#serialNumber {
+  border: 2px solid var(--primary-color);
+  background: #f0f8ff;
+}
+#serialNumber:focus {
+  border-color: var(--accent-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
+}
+
+/* Wichtig: Print-Werte sichtbar machen */
+.print-value {
+  display: none;
+}
+@media print {
+  .print-value {
+    display: inline;
+    font-weight: normal;
+  }
+  /* Input-Felder ausblenden, stattdessen print-value anzeigen */
+  input[type="text"],
+  input[type="date"],
+  textarea,
+  select {
+    display: none;
+  }
+  label {
+    display: inline;
+  }
+  .form-group {
+    margin-bottom: 10px;
+  }
+}
+
+.info-banner {
+  background: #e7f3ff;
+  border-left: 4px solid var(--primary-color);
+  padding: 12px 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #333;
+}
 </style>
 </head>
 <body>
 <div class="container" id="pdfRoot">
 
-<h2 style="border-bottom:3px solid #007aff;padding-bottom:8px">📦 Lieferschein - Schulgeräte</h2>
+<!-- Logo -->
+<div class="logo-container">
+  <img src="https://raw.githubusercontent.com/IHR-GITHUB-USERNAME/IHR-REPO-NAME/main/logo.png" alt="ITK Rheinland Logo" id="mainLogo">
+</div>
+
+<div class="divider"></div>
+
+<div class="info-banner no-print">
+  ⚡ <strong>Schnelleingabe:</strong> Seriennummer scannen/eingeben → Enter drücken → automatisch zur Liste hinzugefügt
+</div>
 
 <form id="deliveryForm" onsubmit="return false;">
 
 <!-- Stadt / Schulform / Schule -->
 <div class="grid">
   <div class="form-group">
-    <label for="city">Stadt *</label>
+    <label for="city">Stadt: <span class="print-value" id="print_city"></span></label>
     <select id="city" required>
       <option value="">Bitte Stadt wählen</option>
       <option value="Neuss">Neuss</option>
@@ -48,7 +189,7 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     </select>
   </div>
   <div class="form-group">
-    <label for="schoolForm">Schulform *</label>
+    <label for="schoolForm">Schulform: <span class="print-value" id="print_schoolForm"></span></label>
     <select id="schoolForm" required>
       <option value="">Bitte auswählen</option>
       <option value="GS">GS</option>
@@ -59,7 +200,7 @@ tr:hover{background:#f1f7ff;cursor:pointer}
   </div>
 </div>
 <div class="form-group">
-  <label for="schoolName">Schulname *</label>
+  <label for="schoolName">Schulname: <span class="print-value" id="print_schoolName"></span></label>
   <select id="schoolName" required>
     <option value="">Bitte Schule auswählen</option>
     <option value="Adolf-Clarenbach-Schule">Adolf-Clarenbach-Schule</option>
@@ -111,50 +252,61 @@ tr:hover{background:#f1f7ff;cursor:pointer}
 <!-- Gerätedaten -->
 <div class="grid">
   <div class="form-group">
-    <label for="serialNumber">Seriennummer</label>
-    <input type="text" id="serialNumber" placeholder="Barcode scannen oder eintippen">
-    <div class="note">Fokus beim Laden aktiviert — einfach scannen.</div>
+    <label for="serialNumber">🔍 Seriennummer (scannen oder eingeben + Enter): <span class="print-value" id="print_serialNumber"></span></label>
+    <input type="text" id="serialNumber" placeholder="Barcode scannen oder eingeben, dann Enter">
+    <div class="note no-print">Fokus aktiviert — einfach scannen und Enter drücken!</div>
   </div>
   <div class="form-group">
-    <label for="deviceName">Gerätename</label>
+    <label for="deviceName">Gerätename: <span class="print-value" id="print_deviceName"></span></label>
     <input type="text" id="deviceName" placeholder="z. B. iPad Pro 11">
   </div>
 </div>
 <div class="grid">
   <div class="form-group">
-    <label for="deliveryDate">Ausgabedatum</label>
+    <label for="deliveryDate">Ausgabedatum: <span class="print-value" id="print_deliveryDate"></span></label>
     <input type="date" id="deliveryDate">
   </div>
   <div class="form-group">
-    <label for="teacherName">Name des Empfängers</label>
+    <label for="teacherName">Name des Empfängers / Abgeholt bei: <span class="print-value" id="print_teacherName"></span></label>
     <input type="text" id="teacherName" placeholder="Vor- und Nachname">
   </div>
 </div>
 <div class="form-group">
-  <label for="schoolClass">Klasse / Abteilung</label>
+  <label for="schoolClass">Klasse / Abteilung: <span class="print-value" id="print_schoolClass"></span></label>
   <input type="text" id="schoolClass" placeholder="z. B. 5a, Verwaltung">
 </div>
 <div class="form-group">
-  <label for="notes">Bemerkungen</label>
+  <label for="notes">Bemerkungen: <span class="print-value" id="print_notes"></span></label>
   <textarea id="notes" rows="3" placeholder="Zusätzliche Informationen, Schäden etc."></textarea>
+</div>
+
+<!-- Incidents Checker -->
+<div class="form-group no-print" style="background:#fff3cd;padding:15px;border-radius:6px;border:2px solid #ffc107">
+  <label for="incidentsFile" style="color:#856404">🔍 Incidents-Checker (Excel/CSV)</label>
+  <input type="file" id="incidentsFile" accept=".csv,.xlsx,.xls,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+  <div class="note" style="color:#856404">
+    <strong>Incidents-Datei laden:</strong> Durchsucht Spalte "Seriennummer" und zeigt "Reference" an.<br>
+    Unterstützt: CSV und Excel (.xlsx, .xls)
+  </div>
+  <div id="incidentsStatus" style="margin-top:8px;font-weight:600;color:#28a745"></div>
 </div>
 
 <!-- CSV Import -->
 <div class="form-group no-print">
-  <label for="csvFileInput">CSV hinzufügen (Seriennummer, Gerätetyp, Schüler, Klasse, Bemerkung)</label>
-  <input type="file" id="csvFileInput" accept=".csv">
+  <label for="csvFileInput">📄 CSV hinzufügen (Seriennummer, Gerätetyp, Schüler, Klasse, Bemerkung)</label>
+  <input type="file" id="csvFileInput" accept=".csv,text/csv,text/plain">
   <div class="note">CSV: erste Zeile optional. Mehrere Spalten möglich.</div>
-</div>
-
-<div class="form-group no-print">
-  <div class="button-group">
-    <button type="button" class="btn-primary" onclick="addDeviceToTable()">➕ Gerät zur Liste hinzufügen</button>
+  <div class="note" style="color:#007aff;margin-top:8px">
+    💡 <strong>iPad-Tipp:</strong> Wenn nicht alle CSV-Dateien sichtbar sind:<br>
+    • Tippen Sie oben rechts auf "Durchsuchen"<br>
+    • Navigieren Sie zum Nextcloud-Ordner<br>
+    • Oder nutzen Sie "Zuletzt verwendet"
   </div>
 </div>
 
 <!-- Tabelle -->
 <div class="form-group">
-  <h3>Geräte / Seriennummern</h3>
+  <h3 style="margin-top:20px;margin-bottom:10px">📋 Geräte / Seriennummern</h3>
   <table id="serialsTable">
     <thead><tr><th>Seriennummer</th><th>Gerätetyp</th><th>Schüler</th><th>Klasse</th><th>Bemerkung</th><th class="no-print">Aktion</th></tr></thead>
     <tbody></tbody>
@@ -162,8 +314,8 @@ tr:hover{background:#f1f7ff;cursor:pointer}
 </div>
 
 <!-- Signature -->
-<div class="form-group">
-  <label>Unterschrift Schule</label>
+<div class="form-group" style="margin-top:30px">
+  <label>✍️ Unterschrift Schule</label>
   <div class="signature-container">
     <canvas id="signatureCanvas" width="700" height="160"></canvas>
     <div class="button-group no-print" style="margin-top:8px">
@@ -172,20 +324,19 @@ tr:hover{background:#f1f7ff;cursor:pointer}
   </div>
 </div>
 
-<div class="button-group no-print" style="margin-top:12px">
-  <button type="button" class="btn-primary" id="savePdfBtn">💾 Als PDF speichern (durchsuchbar)</button>
+<div class="button-group no-print" style="margin-top:20px">
+  <button type="button" class="btn-primary" onclick="printToPdf()" style="font-size:15px;padding:12px 24px">🖨️ Als PDF speichern (durchsuchbar)</button>
   <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Formular zurücksetzen</button>
 </div>
 
 </form>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // Fokus & Datum setzen
 window.addEventListener('load', function(){
-  const sn = document.getElementById('serialNumber'); if(sn) sn.focus();
+  const sn = document.getElementById('serialNumber'); 
+  if(sn) sn.focus();
   const delivery = document.getElementById('deliveryDate');
   if(delivery && !delivery.value) delivery.value = new Date().toISOString().slice(0,10);
 });
@@ -194,7 +345,11 @@ window.addEventListener('load', function(){
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let drawing=false, lastX=0, lastY=0;
-function getXYFromEvent(e){const rect=canvas.getBoundingClientRect(); if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-rect.left, y:e.touches[0].clientY-rect.top}; return {x:e.clientX-rect.left, y:e.clientY-rect.top};}
+function getXYFromEvent(e){
+  const rect=canvas.getBoundingClientRect(); 
+  if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-rect.left, y:e.touches[0].clientY-rect.top}; 
+  return {x:e.clientX-rect.left, y:e.clientY-rect.top};
+}
 canvas.addEventListener('mousedown', e=>{ drawing=true; const p=getXYFromEvent(e); lastX=p.x; lastY=p.y; });
 canvas.addEventListener('mousemove', e=>{ if(!drawing) return; const p=getXYFromEvent(e); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; });
 canvas.addEventListener('mouseup', ()=>{ drawing=false; });
@@ -204,18 +359,24 @@ canvas.addEventListener('touchmove', e=>{ e.preventDefault(); if(!drawing) retur
 canvas.addEventListener('touchend', ()=>{ drawing=false; });
 function clearSignature(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
 
-function isCanvasBlank(){ const blank=document.createElement('canvas'); blank.width=canvas.width; blank.height=canvas.height; return canvas.toDataURL()===blank.toDataURL(); }
+function isCanvasBlank(){ 
+  const blank=document.createElement('canvas'); 
+  blank.width=canvas.width; 
+  blank.height=canvas.height; 
+  return canvas.toDataURL()===blank.toDataURL(); 
+}
 
 function resetForm(){
   document.getElementById('deliveryForm').reset();
   clearSignature();
   document.getElementById('serialsTable').querySelector('tbody').innerHTML='';
   const today=new Date().toISOString().slice(0,10);
-  const delivery=document.getElementById('deliveryDate'); if(delivery) delivery.value=today;
+  const delivery=document.getElementById('deliveryDate'); 
+  if(delivery) delivery.value=today;
   setTimeout(()=>document.getElementById('serialNumber').focus(),50);
 }
 
-// Gerät zur Tabelle hinzufügen
+// AUTOMATISCH Gerät zur Tabelle hinzufügen (Enter oder verlassen des Feldes)
 function addDeviceToTable(){
   const serial = document.getElementById('serialNumber').value.trim();
   const deviceName = document.getElementById('deviceName').value.trim();
@@ -224,8 +385,7 @@ function addDeviceToTable(){
   const notes = document.getElementById('notes').value.trim();
   
   if(!serial){
-    alert('Bitte Seriennummer eingeben');
-    return;
+    return; // Kein Alert, einfach nichts tun
   }
   
   const tbody = document.getElementById('serialsTable').querySelector('tbody');
@@ -269,7 +429,8 @@ function addDeviceToTable(){
 
 // CSV Import
 document.getElementById('csvFileInput').addEventListener('change', function(){
-  const f = this.files && this.files[0]; if(!f) return;
+  const f = this.files && this.files[0]; 
+  if(!f) return;
   const reader = new FileReader();
   reader.onload = function(e){ parseCsv(e.target.result); }
   reader.readAsText(f);
@@ -322,22 +483,24 @@ function parseCsv(text){
   });
 }
 
-// PDF speichern mit durchsuchbarem Text
-document.getElementById('savePdfBtn').addEventListener('click', async function(){
-  const { jsPDF } = window.jspdf;
-  
-  const city = (document.getElementById('city').value || '').trim();
-  const sf = (document.getElementById('schoolForm').value || '').trim();
-  const sname = (document.getElementById('schoolName').value || '').trim();
-  const date = new Date().toISOString().slice(0,10);
-  
-  const safe = str => str.toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
-  const suggestion = (city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}` : 'Lieferschein';
-  
-  let filename = prompt('Bitte Dateinamen eingeben (ohne .pdf):', suggestion + '_' + date);
-  if(filename === null) return;
-  filename = filename.trim() || 'Lieferschein';
-  const finalName = filename.endsWith('.pdf') ? filename : (filename + '.pdf');
+// KRITISCH: Werte vor Print in sichtbare Spans kopieren
+function updatePrintValues(){
+  const fields = ['city', 'schoolForm', 'schoolName', 'serialNumber', 'deviceName', 'deliveryDate', 'teacherName', 'schoolClass', 'notes'];
+  fields.forEach(id => {
+    const input = document.getElementById(id);
+    const printSpan = document.getElementById('print_' + id);
+    if(input && printSpan){
+      const value = input.value || input.options?.[input.selectedIndex]?.text || '';
+      printSpan.textContent = value;
+    }
+  });
+}
+
+// PDF Druck mit Browser-Funktion (wie alter Code)
+function printToPdf(){
+  const city = document.getElementById('city').value.trim();
+  const sf = document.getElementById('schoolForm').value.trim();
+  const sname = document.getElementById('schoolName').value.trim();
   
   if(!city || !sf || !sname){
     if(!confirm('Stadt/Schulform/Schulname nicht vollständig. Trotzdem speichern?')) return;
@@ -348,86 +511,50 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
     if(!confirm('Keine Seriennummern vorhanden. Trotzdem speichern?')) return;
   }
   
-  try {
-    // Erstelle Canvas vom sichtbaren Inhalt
-    const element = document.getElementById('pdfRoot');
-    const canvasImg = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false
-    });
-    
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgData = canvasImg.toDataURL('image/jpeg', 0.95);
-    const imgWidth = 210;
-    const imgHeight = (canvasImg.height * imgWidth) / canvasImg.width;
-    
-    // Füge Bild hinzu
-    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-    
-    // KRITISCH: Füge unsichtbaren durchsuchbaren Text hinzu
-    pdf.setFontSize(8);
-    pdf.setTextColor(255, 255, 255); // Weiß = unsichtbar
-    
-    let yPos = 10;
-    
-    // Schuldaten als durchsuchbarer Text
-    pdf.text(`Stadt: ${city}`, 5, yPos); yPos += 5;
-    pdf.text(`Schulform: ${sf}`, 5, yPos); yPos += 5;
-    pdf.text(`Schule: ${sname}`, 5, yPos); yPos += 5;
-    pdf.text(`Datum: ${document.getElementById('deliveryDate').value}`, 5, yPos); yPos += 5;
-    pdf.text(`Empfänger: ${document.getElementById('teacherName').value}`, 5, yPos); yPos += 5;
-    
-    // Alle Seriennummern aus Tabelle als durchsuchbaren Text
-    const rows = tbody.querySelectorAll('tr');
-    rows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if(cells.length >= 5){
-        const serial = cells[0].textContent.trim();
-        const type = cells[1].textContent.trim();
-        const student = cells[2].textContent.trim();
-        const klass = cells[3].textContent.trim();
-        const note = cells[4].textContent.trim();
-        
-        pdf.text(`Seriennummer: ${serial}`, 5, yPos); yPos += 4;
-        if(type) pdf.text(`Typ: ${type}`, 5, yPos); yPos += 4;
-        if(student) pdf.text(`Schüler: ${student}`, 5, yPos); yPos += 4;
-        if(klass) pdf.text(`Klasse: ${klass}`, 5, yPos); yPos += 4;
-        if(note) pdf.text(`Bemerkung: ${note}`, 5, yPos); yPos += 4;
-        yPos += 3;
-        
-        // Wenn Seite voll, neue Seite für weiteren Text
-        if(yPos > 280){
-          pdf.addPage();
-          yPos = 10;
-        }
-      }
-    });
-    
-    // PDF-Metadaten setzen (auch für Spotlight)
-    const allSerials = Array.from(rows).map(r => r.querySelector('td')?.textContent || '').filter(s => s).join(', ');
-    pdf.setProperties({
-      title: `Lieferschein ${sname} ${date}`,
-      subject: `Geräteausgabe ${city}`,
-      author: sname,
-      keywords: `Seriennummern: ${allSerials}`,
-      creator: 'Lieferschein-System'
-    });
-    
-    pdf.save(finalName);
-    alert('PDF erfolgreich erstellt und gespeichert!\n\nDas PDF enthält durchsuchbaren Text für Spotlight.');
-    
-  } catch(err) {
-    alert('Fehler beim Erstellen des PDFs: ' + (err && err.message ? err.message : err));
-    console.error(err);
+  if(isCanvasBlank()){
+    if(!confirm('Keine Unterschrift vorhanden. Trotzdem speichern?')) return;
   }
-});
+  
+  // Werte für Print-Ansicht kopieren
+  updatePrintValues();
+  
+  // Dateiname vorschlagen via Browser-Dialog
+  const date = new Date().toISOString().slice(0,10);
+  const safe = str => str.toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
+  const suggestion = (city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}_${date}` : `Lieferschein_${date}`;
+  
+  // Setze Dokumenttitel für PDF-Dateiname
+  document.title = suggestion;
+  
+  // Browser-Druck-Dialog öffnen
+  window.print();
+  
+  // Titel zurücksetzen
+  setTimeout(() => {
+    document.title = 'Lieferschein - Schulgeräte';
+  }, 1000);
+}
 
-// Enter-Taste zum Hinzufügen
+// Enter-Taste zum AUTOMATISCHEN Hinzufügen zur Liste
 document.getElementById('serialNumber').addEventListener('keypress', function(e){
   if(e.key === 'Enter'){
     e.preventDefault();
     addDeviceToTable();
+  }
+});
+
+// Auch bei Tab-Taste hinzufügen (optional)
+document.getElementById('serialNumber').addEventListener('blur', function(){
+  const serial = this.value.trim();
+  if(serial && serial.length > 3){ // Nur wenn mind. 4 Zeichen
+    // Check ob bereits in Tabelle
+    const tbody = document.getElementById('serialsTable').querySelector('tbody');
+    const existing = Array.from(tbody.querySelectorAll('tr')).find(row => 
+      row.querySelector('td')?.textContent.trim() === serial
+    );
+    if(!existing){
+      addDeviceToTable();
+    }
   }
 });
 </script>
