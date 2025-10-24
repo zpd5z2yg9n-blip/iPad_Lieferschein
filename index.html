@@ -1,3 +1,74 @@
+<!DOCTYPE html> <html lang="de"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Lieferschein - Schulgeräte</title> <style> body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; max-width:920px; margin:18px auto;
+
+pasted
+
+Das ist mein Code die  Darstellung auf dem iPAd und MAc  ist super beim pdf Druck auf dem iPhone wird das Dokument nur bis  circa Seriennummer  mit Inhalt gefüllt der rest bleibt weiß liegt es an dynamischen Skalierungsproblemen auf dem iPhone
+
+Das Problem liegt tatsächlich an mehreren Faktoren, die speziell auf dem iPhone auftreten:
+
+Hauptprobleme:
+html2canvas begrenzte Canvas-Höhe auf iOS: Mobile Safari hat strikte Limits für Canvas-Dimensionen
+Viewport-Skalierung: Das iPhone skaliert anders als iPad/Mac
+Memory-Limits: iOS beschränkt den verfügbaren Speicher für Canvas-Operationen
+Lösung:
+Lieferschein - Schulgeräte (iPhone-optimiert)
+Interaktives Artefakt 
+Was wurde geändert:
+1. iPhone-Erkennung & angepasster Scale
+Reduzierter Scale-Faktor (1.5 statt 2) auf kleinen iOS-Geräten
+Verhindert Speicher-Überlastung
+2. Erweiterte html2canvas-Optionen
+javascript
+windowWidth: element.scrollWidth,
+windowHeight: element.scrollHeight,
+allowTaint: true,
+foreignObjectRendering: false,
+imageTimeout: 0
+Diese Optionen helfen iOS, den kompletten Inhalt zu erfassen.
+
+3. Mehrseitige PDF-Unterstützung
+Falls der Inhalt zu lang für eine A4-Seite ist, wird er automatisch auf mehrere Seiten verteilt.
+
+4. Reduzierte JPEG-Qualität
+0.90 statt 0.95 - spart Speicher ohne sichtbare Qualitätseinbußen
+
+Zusätzliche Tipps falls es weiterhin Probleme gibt:
+Alternative Lösung - Scrollen vor dem Export deaktivieren:
+
+javascript
+// Vor html2canvas:
+const originalOverflow = document.body.style.overflow;
+document.body.style.overflow = 'visible';
+element.style.overflow = 'visible';
+
+// Nach html2canvas:
+document.body.style.overflow = originalOverflow;
+Testen Sie das aktualisierte Formular auf Ihrem iPhone. Die Änderungen sollten das vollständige Erfassen des Dokuments ermöglichen! 📱✅
+
+
+ist  der Code komplett ?  Ich sehe kein html am Anfang :)
+
+Sie haben völlig recht! Ich habe nur einen Teil aktualisiert. Hier ist der komplette Code:
+
+Lieferschein - Schulgeräte (iPhone-optimiert)
+Interaktives Artefakt ∙ Version 2 
+Perfekt! Jetzt ist der komplette HTML-Code da, von <!DOCTYPE html> bis </html>.
+
+Die wichtigsten iPhone-Optimierungen sind jetzt enthalten:
+
+✅ Reduzierter Scale-Faktor für iPhone (1.5 statt 2)
+✅ Erweiterte html2canvas-Optionen für iOS
+✅ Mehrseitige PDF-Unterstützung falls nötig
+✅ Optimierte JPEG-Kompression
+Testen Sie es jetzt auf Ihrem iPhone - das vollständige Dokument sollte nun korrekt im PDF erfasst werden! 📱✨
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -391,7 +462,7 @@ function parseCsv(text){
   });
 }
 
-// PDF speichern mit durchsuchbarem Text
+// PDF speichern mit durchsuchbarem Text (iPhone-optimiert)
 document.getElementById('savePdfBtn').addEventListener('click', async function(){
   const { jsPDF } = window.jspdf;
   
@@ -418,32 +489,70 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
   const finalName = filename + '.pdf';
   
   try {
-    // Erstelle Canvas vom sichtbaren Inhalt
     const element = document.getElementById('pdfRoot');
+    
+    // iPhone-spezifische Optimierungen
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isSmallScreen = window.innerWidth < 768;
+    
+    // Reduziere Scale auf iPhone für bessere Performance
+    const scale = (isIOS && isSmallScreen) ? 1.5 : 2;
+    
+    // Wichtig: Setze maximale Canvas-Höhe für iOS
     const canvasImg = await html2canvas(element, {
-      scale: 2,
+      scale: scale,
       useCORS: true,
-      logging: false
+      logging: false,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+      // iOS Canvas-Limit beachten
+      height: element.scrollHeight,
+      width: element.scrollWidth,
+      // Bessere Rendering-Qualität auf iOS
+      allowTaint: true,
+      foreignObjectRendering: false,
+      imageTimeout: 0
     });
     
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgData = canvasImg.toDataURL('image/jpeg', 0.95);
+    const imgData = canvasImg.toDataURL('image/jpeg', 0.90);
     const imgWidth = 210;
     const imgHeight = (canvasImg.height * imgWidth) / canvasImg.width;
     
-    // Füge Bild hinzu
-    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+    // Prüfe ob Inhalt auf eine Seite passt oder mehrere Seiten benötigt
+    const pageHeight = 297; // A4 Höhe in mm
     
-    // Neue Seite für unsichtbaren Text (verhindert Ghosting)
+    if(imgHeight <= pageHeight){
+      // Alles passt auf eine Seite
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+    } else {
+      // Mehrseitiges Dokument - teile Bild auf
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      // Erste Seite
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      // Weitere Seiten falls nötig
+      while(heightLeft > 0){
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+    }
+    
+    // Neue Seite für unsichtbaren durchsuchbaren Text
     pdf.addPage();
     
-    // KRITISCH: Füge unsichtbaren durchsuchbaren Text hinzu
+    // Füge unsichtbaren durchsuchbaren Text hinzu
     pdf.setFontSize(8);
-    pdf.setTextColor(255, 255, 255); // Weiß = unsichtbar auf weißem Hintergrund
+    pdf.setTextColor(255, 255, 255);
     
     let yPos = 10;
     
-    // Dokumentdaten als durchsuchbarer Text
+    // Dokumentdaten
     pdf.text(`Stadt: ${city}`, 5, yPos); yPos += 5;
     pdf.text(`Typ: ${docType}`, 5, yPos); yPos += 5;
     pdf.text(`Schule: ${sname}`, 5, yPos); yPos += 5;
@@ -451,7 +560,7 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
     pdf.text(`Datum: ${document.getElementById('deliveryDate').value}`, 5, yPos); yPos += 5;
     pdf.text(`Empfänger: ${document.getElementById('teacherName').value}`, 5, yPos); yPos += 5;
     
-    // Alle Seriennummern aus Tabelle als durchsuchbaren Text
+    // Alle Seriennummern
     const rows = tbody.querySelectorAll('tr');
     rows.forEach(row => {
       const cells = row.querySelectorAll('td');
@@ -469,7 +578,6 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
         if(note) pdf.text(`Bemerkung: ${note}`, 5, yPos); yPos += 4;
         yPos += 3;
         
-        // Wenn Seite voll, neue Seite für weiteren Text
         if(yPos > 280){
           pdf.addPage();
           yPos = 10;
@@ -477,7 +585,7 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
       }
     });
     
-    // PDF-Metadaten setzen (auch für Spotlight)
+    // PDF-Metadaten
     const allSerials = Array.from(rows).map(r => r.querySelector('td')?.textContent || '').filter(s => s).join(', ');
     pdf.setProperties({
       title: filename,
