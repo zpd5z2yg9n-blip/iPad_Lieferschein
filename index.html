@@ -25,6 +25,17 @@ table{width:100%;border-collapse:collapse;margin-top:8px}
 th,td{padding:8px;border:1px solid #ddd;text-align:left;font-size:13px}
 tr:hover{background:#f1f7ff;cursor:pointer}
 .note { color:#666;font-size:13px;margin-top:4px; }
+.filename-display { 
+  background:#f0f8ff; 
+  border:2px solid #007aff; 
+  border-radius:6px; 
+  padding:12px; 
+  font-weight:600; 
+  color:#007aff; 
+  font-size:15px; 
+  word-break:break-all;
+  margin-top:8px;
+}
 </style>
 </head>
 <body>
@@ -34,10 +45,9 @@ tr:hover{background:#f1f7ff;cursor:pointer}
   <img src="logo.png" alt="Logo" style="height:80px;">
 </div>
 
-
 <form id="deliveryForm" onsubmit="return false;">
 
-<!-- Stadt / Schulform / Schule -->
+<!-- Stadt / Typ (LS/AB) -->
 <div class="grid">
   <div class="form-group">
     <label for="city">Stadt *</label>
@@ -51,16 +61,16 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     </select>
   </div>
   <div class="form-group">
-    <label for="schoolForm">Schulform *</label>
-    <select id="schoolForm" required>
+    <label for="docType">Typ *</label>
+    <select id="docType" required>
       <option value="">Bitte auswählen</option>
-      <option value="GS">GS</option>
-      <option value="GY">GY</option>
-      <option value="GE">GE</option>
-      <option value="RS">RS</option>
+      <option value="LS">LS (Lieferschein)</option>
+      <option value="AB">AB (Abholung)</option>
     </select>
   </div>
 </div>
+
+<!-- Schulname + Dateiname-Anzeige -->
 <div class="form-group">
   <label for="schoolName">Schulname *</label>
   <select id="schoolName" required>
@@ -70,18 +80,18 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     <option value="Alexander-v.-Humboldt-Gymnasium">Alexander-v.-Humboldt-Gymnasium</option>
     <option value="Burgunderschule">Burgunderschule</option>
     <option value="Comenius-Schule">Comenius-Schule</option>
-    <option value="Die Brücke">Die Brücke</option>
+    <option value="Die-Brücke">Die Brücke</option>
     <option value="Dreikönigenschule">Dreikönigenschule</option>
     <option value="Friedrich-von-Bodelschwingh-Schule">Friedrich-von-Bodelschwingh-Schule</option>
-    <option value="Ganztagsrealschule Norf">Ganztagsrealschule Norf</option>
+    <option value="Ganztagsrealschule-Norf">Ganztagsrealschule Norf</option>
     <option value="Gebrüder-Grimm-Schule">Gebrüder-Grimm-Schule</option>
-    <option value="Gesamtschule an der Erft">Gesamtschule an der Erft</option>
-    <option value="Gesamtschule Nordstadt">Gesamtschule Nordstadt</option>
-    <option value="Gesamtschule Norf">Gesamtschule Norf</option>
+    <option value="Gesamtschule-an-der-Erft">Gesamtschule an der Erft</option>
+    <option value="Gesamtschule-Nordstadt">Gesamtschule Nordstadt</option>
+    <option value="Gesamtschule-Norf">Gesamtschule Norf</option>
     <option value="Geschwister-Scholl-Grundschule">Geschwister-Scholl-Grundschule</option>
     <option value="Görresschule">Görresschule</option>
-    <option value="Grundschule Allerheiligen">Grundschule Allerheiligen</option>
-    <option value="Gymnasium Norf">Gymnasium Norf</option>
+    <option value="Grundschule-Allerheiligen">Grundschule Allerheiligen</option>
+    <option value="Gymnasium-Norf">Gymnasium Norf</option>
     <option value="Herbert-Karrenberg-Schule">Herbert-Karrenberg-Schule</option>
     <option value="Janusz-Korczak-Gesamtschule">Janusz-Korczak-Gesamtschule</option>
     <option value="Karl-Kreiner-Schule">Karl-Kreiner-Schule</option>
@@ -90,17 +100,17 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     <option value="Leoschule">Leoschule</option>
     <option value="Marie-Curie-Gymnasium">Marie-Curie-Gymnasium</option>
     <option value="Martin-Luther-Schule">Martin-Luther-Schule</option>
-    <option value="Martinus-Schule Holzheim">Martinus-Schule Holzheim</option>
+    <option value="Martinus-Schule-Holzheim">Martinus-Schule Holzheim</option>
     <option value="Maximilian-Kolbe-Schule">Maximilian-Kolbe-Schule</option>
     <option value="Münsterschule">Münsterschule</option>
     <option value="Nelly-Sachs-Gymnasium">Nelly-Sachs-Gymnasium</option>
     <option value="Pestalozzischule">Pestalozzischule</option>
     <option value="Quirinus-Gymnasium">Quirinus-Gymnasium</option>
-    <option value="Realschule Holzheim">Realschule Holzheim</option>
+    <option value="Realschule-Holzheim">Realschule Holzheim</option>
     <option value="Rita-Süssmuth-Realschule">Rita-Süssmuth-Realschule</option>
-    <option value="Realschule Südstadt">Realschule Südstadt</option>
+    <option value="Realschule-Südstadt">Realschule Südstadt</option>
     <option value="Richard-Schirrman-Schule">Richard-Schirrman-Schule</option>
-    <option value="Sekundarschule Neuss">Sekundarschule Neuss</option>
+    <option value="Sekundarschule-Neuss">Sekundarschule Neuss</option>
     <option value="St.-Andreas-Schule">St.-Andreas-Schule</option>
     <option value="St.-Hubertus-Schule">St.-Hubertus-Schule</option>
     <option value="St.-Konrad-Schule">St.-Konrad-Schule</option>
@@ -109,6 +119,7 @@ tr:hover{background:#f1f7ff;cursor:pointer}
     <option value="St.Peter-Schule">St.Peter-Schule</option>
     <option value="Theodor-Schwann-Kolleg">Theodor-Schwann-Kolleg</option>
   </select>
+  <div class="filename-display" id="filenameDisplay">📄 Dateiname wird automatisch generiert...</div>
 </div>
 
 <!-- Gerätedaten -->
@@ -191,6 +202,60 @@ window.addEventListener('load', function(){
   const sn = document.getElementById('serialNumber'); if(sn) sn.focus();
   const delivery = document.getElementById('deliveryDate');
   if(delivery && !delivery.value) delivery.value = new Date().toISOString().slice(0,10);
+  updateFilenameDisplay();
+});
+
+// Dateiname-Generierung
+function generateFilename() {
+  const city = document.getElementById('city').value.trim();
+  const docType = document.getElementById('docType').value.trim();
+  const school = document.getElementById('schoolName').value.trim();
+  
+  if(!city || !docType || !school) return null;
+  
+  // Stadt-Kürzel
+  const cityMap = {
+    'Neuss': 'NE',
+    'Jüchen': 'JÜ',
+    'Grevenbroich': 'GV',
+    'Kaarst': 'KA',
+    'Meerbusch': 'MB'
+  };
+  const cityCode = cityMap[city] || city.substring(0, 2).toUpperCase();
+  
+  // Datum mit Zeit: YYYYMMDDHHMMSS
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  
+  // Schulname säubern
+  const safe = str => str.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-äöüÄÖÜß]/g, '');
+  const schoolSafe = safe(school);
+  
+  return `${cityCode}_${docType}_${schoolSafe}_${timestamp}`;
+}
+
+// Dateiname-Anzeige aktualisieren
+function updateFilenameDisplay() {
+  const filename = generateFilename();
+  const display = document.getElementById('filenameDisplay');
+  if(filename) {
+    display.textContent = `📄 ${filename}.pdf`;
+    display.style.background = '#f0f8ff';
+  } else {
+    display.textContent = '📄 Dateiname wird automatisch generiert...';
+    display.style.background = '#f5f5f5';
+  }
+}
+
+// Event Listener für Änderungen
+['city', 'docType', 'schoolName'].forEach(id => {
+  document.getElementById(id).addEventListener('change', updateFilenameDisplay);
 });
 
 // Signature
@@ -215,6 +280,7 @@ function resetForm(){
   document.getElementById('serialsTable').querySelector('tbody').innerHTML='';
   const today=new Date().toISOString().slice(0,10);
   const delivery=document.getElementById('deliveryDate'); if(delivery) delivery.value=today;
+  updateFilenameDisplay();
   setTimeout(()=>document.getElementById('serialNumber').focus(),50);
 }
 
@@ -329,27 +395,27 @@ function parseCsv(text){
 document.getElementById('savePdfBtn').addEventListener('click', async function(){
   const { jsPDF } = window.jspdf;
   
-  const city = (document.getElementById('city').value || '').trim();
-  const sf = (document.getElementById('schoolForm').value || '').trim();
-  const sname = (document.getElementById('schoolName').value || '').trim();
-  const date = new Date().toISOString().slice(0,10);
+  const city = document.getElementById('city').value.trim();
+  const docType = document.getElementById('docType').value.trim();
+  const sname = document.getElementById('schoolName').value.trim();
   
-  const safe = str => str.toString().trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-\.]/g,'');
-  const suggestion = (city && sf && sname) ? `${safe(city)}_${safe(sf)}_${safe(sname)}` : 'Lieferschein';
-  
-  let filename = prompt('Bitte Dateinamen eingeben (ohne .pdf):', suggestion + '_' + date);
-  if(filename === null) return;
-  filename = filename.trim() || 'Lieferschein';
-  const finalName = filename.endsWith('.pdf') ? filename : (filename + '.pdf');
-  
-  if(!city || !sf || !sname){
-    if(!confirm('Stadt/Schulform/Schulname nicht vollständig. Trotzdem speichern?')) return;
+  if(!city || !docType || !sname){
+    alert('Bitte Stadt, Typ (LS/AB) und Schulname auswählen!');
+    return;
   }
   
   const tbody = document.getElementById('serialsTable').querySelector('tbody');
   if(!tbody || !tbody.querySelector('tr')){
     if(!confirm('Keine Seriennummern vorhanden. Trotzdem speichern?')) return;
   }
+  
+  const filename = generateFilename();
+  if(!filename) {
+    alert('Fehler beim Generieren des Dateinamens');
+    return;
+  }
+  
+  const finalName = filename + '.pdf';
   
   try {
     // Erstelle Canvas vom sichtbaren Inhalt
@@ -374,10 +440,11 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
     
     let yPos = 10;
     
-    // Schuldaten als durchsuchbarer Text
+    // Dokumentdaten als durchsuchbarer Text
     pdf.text(`Stadt: ${city}`, 5, yPos); yPos += 5;
-    pdf.text(`Schulform: ${sf}`, 5, yPos); yPos += 5;
+    pdf.text(`Typ: ${docType}`, 5, yPos); yPos += 5;
     pdf.text(`Schule: ${sname}`, 5, yPos); yPos += 5;
+    pdf.text(`Dateiname: ${filename}`, 5, yPos); yPos += 5;
     pdf.text(`Datum: ${document.getElementById('deliveryDate').value}`, 5, yPos); yPos += 5;
     pdf.text(`Empfänger: ${document.getElementById('teacherName').value}`, 5, yPos); yPos += 5;
     
@@ -410,15 +477,15 @@ document.getElementById('savePdfBtn').addEventListener('click', async function()
     // PDF-Metadaten setzen (auch für Spotlight)
     const allSerials = Array.from(rows).map(r => r.querySelector('td')?.textContent || '').filter(s => s).join(', ');
     pdf.setProperties({
-      title: `Lieferschein ${sname} ${date}`,
-      subject: `Geräteausgabe ${city}`,
+      title: filename,
+      subject: `${docType} ${sname}`,
       author: sname,
       keywords: `Seriennummern: ${allSerials}`,
       creator: 'Lieferschein-System'
     });
     
     pdf.save(finalName);
-    alert('PDF erfolgreich erstellt und gespeichert!\n\nDas PDF enthält durchsuchbaren Text für Spotlight.');
+    alert('PDF erfolgreich erstellt!\n\nDateiname: ' + finalName + '\n\nDas PDF enthält durchsuchbaren Text für Spotlight.');
     
   } catch(err) {
     alert('Fehler beim Erstellen des PDFs: ' + (err && err.message ? err.message : err));
